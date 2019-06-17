@@ -23,6 +23,6 @@ io.sockets.on('connection', function(socket){
 	});
 });
 
-const server = http.listen(8080, function(){
-	console.log('Listening on port *:8080');
+const server = http.listen(process.env.PORT || 5000, function(){
+	console.log('Listening on port ' + process.env.PORT);
 });

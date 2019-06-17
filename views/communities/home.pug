@@ -1,0 +1,5 @@
+extends ../common/layout
+block content
+    ul#messages
+    form(action='./', method='post', id='chatForm')
+        input(id='txt', autocomplete='off', autofocus='on', placeholder='type your message here...')

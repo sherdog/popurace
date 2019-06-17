@@ -2,9 +2,13 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const url = require('url');
+
 
 app.get('/', function(req, res){
-	res.render('index.ejs');
+	var hostname = req.headers.host;
+	console.log("Request for " + hostname + " received.");
+	res.render('index.ejs', { host: hostname });
 })
 
 io.sockets.on('connection', function(socket){
@@ -23,6 +27,10 @@ io.sockets.on('connection', function(socket){
 	});
 });
 
-const server = http.listen(process.env.PORT || 5000, function(){
-	console.log('Listening on port ' + process.env.PORT);
+let port = 8080;
+if (process.env.PORT)
+	port = process.env.PORT;
+
+const server = http.listen(port, function(){
+	console.log('Listening on port ' + port);
 });

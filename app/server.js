@@ -1,34 +1,18 @@
 var app = require('./index')
 var config = require('./config')
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('./socket')(http);
 
 //include some sort of logging.. need to research
-console.log('starting server')
-
-io.sockets.on('connection', function(socket){
-	//start the realtime stuffs.
-	socket.on('username', function(username){
-		socket.username = username;
-		io.emit('is_online', '<i>' + socket.username + ' joined the chat...</i>');
-		io.emit('enter_chat', socket.username);
-	});
-
-	socket.on('disconnect', function(username){
-		io.emit('is_online', '<i>' + socket.username + ' has left the chat...</i>');
-		io.emit('leavechat', socket.username);
-	});
-
-	socket.on('chat_message', function(message){
-		io.emit('chat_message', '<strong>'+socket.username+'</strong>: ' + message);
-	});
-});
-
+console.log('Starting server instance')
 
 let port = 3000;
-if (process.env.PORT)
-	port = process.env.PORT;
 
-const server = http.listen(port, function(){
+//override port for dynamic setting by heroku
+if (process.env.PORT) {
+	port = process.env.PORT;
+}
+
+const server = http.listen(port, function() {
 	console.log('Listening on port ' + port);
 });

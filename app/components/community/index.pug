@@ -48,7 +48,7 @@ block content
         });
 
         socket.on('leave_chat', function(username){
-            $('li:contains("'+username+'")').remove();
+        $('#userList > li:contains("'+username+'")').remove();
         });
 
         var username = prompt('Enter your username');

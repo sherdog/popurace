@@ -4,7 +4,8 @@ let ioInstance;
 module.exports = function(http) {
 
 	const io = require('socket.io')(http);
-
+	ioInstance = io;
+	
 	io.sockets.on('connection', function(socket){
 		//start the realtime stuffs.
 		socket.on('username', function(username){
@@ -22,8 +23,6 @@ module.exports = function(http) {
 			io.emit('chat_message', '<strong>'+socket.username+'</strong>: ' + message);
 		});
 	});
-
-	ioInstance = io;
 
     return io;
 }

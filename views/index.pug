@@ -1,1 +1,22 @@
-extends ../common/layout
+extends common/main
+block content
+    .container
+        .row
+            .col-lg-4.offset-lg-4
+                form.text-center.border.border-inverse.p-5.signin_form
+                    p.h4.mb-4 Sign in
+                    input#defaultLoginFormEmail.form-control.mb-4(type='email', placeholder='E-mail')
+                    input#defaultLoginFormPassword.form-control.mb-4(type='password', placeholder='Password')
+                    .d-flex.justify-content-around
+                        div
+                            .custom-control.custom-checkbox
+                                input#defaultLoginFormRemember.custom-control-input(type='checkbox')
+                            label.custom-control-label(for='defaultLoginFormRemember') Remember me
+                        div
+                            a(href='') Forgot password?
+                    button.btn.btn-info.btn-block.my-4(type='submit') Sign in
+                    p
+                        | Not a member?
+                        a(href='') Register
+                    p
+                        a(href="/community") Go to community

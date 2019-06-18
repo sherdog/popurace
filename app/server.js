@@ -1,18 +1,31 @@
 var app = require('./index')
 var config = require('./config')
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 //include some sort of logging.. need to research
-console.log('staring server')
+console.log('starting server')
 
-app.listen(config.express.port, config.express.ip, function(error){
-    if (error)
-    {
-        //log the error with whatever.
-        console.log('Errro ' + error);
-        process.exit(10);
-    }
+io.sockets.on('connection', function(socket){
+	//start the realtime stuffs.
+	socket.on('username', function(username){
+		socket.username = username;
+		io.emit('is_online', '<i>' + socket.username + ' joined the chat...</i>');
+	});
 
-    console.log('Express is listenig on http://' + 
-        config.express.ip + ':' + config.express.port)
+	socket.on('disconnect', function(username){
+		io.emit('is_online', '<i>' + socket.username + ' has left the chat...</i>');
+	});
 
-})
+	socket.on('chat_message', function(message){
+		io.emit('chat_message', '<strong>'+socket.username+'</strong>: ' + message);
+	});
+});
+
+let port = 3000;
+if (process.env.PORT)
+	port = process.env.PORT;
+
+const server = http.listen(port, '127.0.0.1', function(){
+	console.log('Listening on port ' + port);
+});

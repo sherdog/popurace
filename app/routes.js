@@ -1,16 +1,14 @@
 var express = require('express')
 var join = require('path').join
 
-
 var router = new express.Router();
 
-router.use('/login', require('./components/login/login_routes'))
-router.use('/community', require('./components/community/home'))
+//define all routes here.
+router.use('/community', require('./components/community/community_routes'))
 
-router.get('/', function(req, res){
+//default to main entry route
+router.get('/', function(req, res) {
     res.render('default/index')
 })
-
-//define all routes here.
 
 module.exports = router

@@ -11,16 +11,19 @@ io.sockets.on('connection', function(socket){
 	socket.on('username', function(username){
 		socket.username = username;
 		io.emit('is_online', '<i>' + socket.username + ' joined the chat...</i>');
+		io.emit('enter_chat', socket.username);
 	});
 
 	socket.on('disconnect', function(username){
 		io.emit('is_online', '<i>' + socket.username + ' has left the chat...</i>');
+		io.emit('leavechat', socket.username);
 	});
 
 	socket.on('chat_message', function(message){
 		io.emit('chat_message', '<strong>'+socket.username+'</strong>: ' + message);
 	});
 });
+
 
 let port = 3000;
 if (process.env.PORT)

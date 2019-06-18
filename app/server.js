@@ -26,6 +26,6 @@ let port = 3000;
 if (process.env.PORT)
 	port = process.env.PORT;
 
-const server = http.listen(port, '127.0.0.1', function(){
+const server = http.listen(port, function(){
 	console.log('Listening on port ' + port);
 });

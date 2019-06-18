@@ -4,6 +4,7 @@ var join = require('path').join
 var router = new express.Router();
 
 //define all routes here.
+//Could loop and locate any files ending with _routes.js - but for now this is simple.
 router.use('/community', require('./components/community/community_routes'))
 
 //default to main entry route

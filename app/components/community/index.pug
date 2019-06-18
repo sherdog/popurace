@@ -12,13 +12,13 @@ block content
                 .col-lg-2.bg-light.col-md-2.col-sm-2
                     h5 Users
     footer.bg-dark
-        .container-fluid
-            .row
-                .col-lg-10.p-2.col-md-10.col-sm-10
-                    form(action='./', method='post', id='chatForm')
+        form(action='./', method='post', id='chatForm')
+            .container-fluid
+                .row
+                    .col-lg-10.p-2.col-md-10.col-sm-10
                         input(id='txt', class='form-control' autocomplete='off', autofocus='on', placeholder='type your message here...')
-                .col-lg-2.p-2.col-md-2.col-sm-2
-                    input(type='button' class='btn btn-primary btn-block') Send
+                    .col-lg-2.p-2.col-md-2.col-sm-2
+                        button(class='btn btn-primary btn-block') Send
 
     script.
         var myVar = '#{ host }';

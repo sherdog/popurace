@@ -1,15 +1,35 @@
 extends ../common/layout
 block content
-    ul#messages
-    form(action='./', method='post', id='chatForm')
-        input(id='txt', autocomplete='off', autofocus='on', placeholder='type your message here...')
+    header.bg-dark
+        .container-fluid
+            .row.float-right.p-2
+                a(id="disconnect", href="/" class="btn btn-primary float-right") Leave Chat
+    #content
+        .continer-fluid
+            .row
+                .col-lg-10.col-md-10.col-sm-10
+                    ul#messages
+                .col-lg-2.bg-light.col-md-2.col-sm-2
+                    h5 Users
+    footer.bg-dark
+        .container-fluid
+            .row
+                .col-lg-10.p-2.col-md-10.col-sm-10
+                    form(action='./', method='post', id='chatForm')
+                        input(id='txt', class='form-control' autocomplete='off', autofocus='on', placeholder='type your message here...')
+                .col-lg-2.p-2.col-md-2.col-sm-2
+                    button(class='btn btn-primary btn-block') Send
+
     script.
         var myVar = '#{ host }';
         var socket = io.connect(myVar);
-        $('form').submit(function(e){
+
+        $('form').submit(function(e) {
             e.preventDefault();
+
             socket.emit('chat_message', $('#txt').val());
             $('#txt').val('');
+
             return false;
         });
 

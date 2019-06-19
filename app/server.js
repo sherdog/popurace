@@ -15,11 +15,13 @@ if (process.env.PORT) {
 }
 console.log('config: ' + config.mongodb.host );
 
+/*
 mongo.connect(config.mongodb.host,
 { useNewUrlParser: true }, (err, db) => {
 	if (err) console.log("Error connecting to db");
 
 });
+*/
 
 const server = http.listen(port, function() {
 	console.log('Listening on port ' + port);

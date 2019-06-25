@@ -8,7 +8,7 @@ config.express = {
 
 config.mongodb = {
     port: process.env.MONGODB_PORT || 27017,
-    host: process.env.MONGODB_HOST || 'mongodb://mongoadmin:michael5@138.197.122.119:27017,138.197.122.119:27017/community'
+    host: process.env.MONGODB_HOST || 'mongodb://sherdog:michael5@209.124.64.183:27017/community'
 }
 
 if (PRODUCTION)

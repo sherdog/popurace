@@ -1,30 +1,17 @@
-const mongo = require('mongodb').MongoClient
-
-var state = { 
-    db : null
-}
-
-exports.connect = function(url, done) {
-    if (state.db) return done();
-
-    mongo.connect(url, function(error, db){
-        if (err) return done(err);
-
-        state.db = db;
-        done();
-    })
-}
-
-exports.get = function() {
-    return state.db;
-}
-
-exports.close = function(done) {
-    if (state.db) {
-        state.db.close(function(err, result) {
-            state.db = null;
-            state.mode = null;
-            done(err);
-        })
+const mongoose = require('mongoose')
+const config = require('./config');
+class Connection {
+    static connect() {
+        if ( this.db ) return Promise.resolve(this.db)
+        return mongoose.connect(this.url, this.options)
     }
 }
+Connection.db = null
+Connection.url = config.mongodb.host
+Connection.options = {
+    useNewUrlParser: true,
+    sslValidate: false,
+    ssl: false
+}
+
+module.exports = { Connection }

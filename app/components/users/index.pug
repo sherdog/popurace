@@ -1,0 +1,20 @@
+extends ../common/main
+block content
+    .container
+        .row
+            .col-lg-4.offset-lg-4
+                form.text-center.border.border-inverse.p-5.signin_form
+                    p.h4.mb-4 Create Account
+                    input#defaultLoginFormEmail.form-control.mb-4(type='text', placeholder='Username')
+                    input#defaultLoginFormPassword.form-control.mb-4(type='password', placeholder='Password')
+                    .d-flex.justify-content-around
+                    button.btn.btn-info.btn-block.my-4(type='submit', id='create_account') Create Account
+
+    script.
+        $('form').submit(function(e) {
+            e.preventDefault();
+
+            alert('Create Account Form Submitted');
+
+            return false;
+        });

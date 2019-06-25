@@ -6,6 +6,7 @@ block content
                 form.text-center.border.border-inverse.p-5.signin_form
                     p.h4.mb-4 Create Account
                     p Create your free account, fill in the form below.
+                    p#form-alert.hidden.alert.alert-danger
                     input#email.form-control.mb-4(type='text', placeholder='Username', required)
                     .valid-feedback Username Available!
                     .invalid-feedback Username Taken!
@@ -39,7 +40,15 @@ block content
                 dataType: 'json',
                 data: JSON.stringify({ 'username': $('#email').val() }),
                 success: function(response){
-                    $('#email').addClass('is-valid');
+                    if (response.available == true)
+                    {
+                        $('#email').addClass('is-valid');
+                    }
+                    else
+                    {
+                        $('.invalid-feedback').html('Username Taken');
+                        $('#email').addClass('is-invalid');
+                    }
                 },
                 failure: function(error) {
                     $('.invalid-feedback').html('Username Taken');
@@ -50,7 +59,43 @@ block content
         $('form').submit(function(e) {
             e.preventDefault();
             
-            //check if username is available.
-
-            return false;
+            let email = ($('#email').val()).trim();
+            let password = $('#password').val();
+            let password_again = $('#password-again').val();
+            
+            if (password != password_again)
+            {
+                $('#form-alert').show();
+                $('#form-alert').html('Password do no match');
+                 
+                return false;
+            }
+            else if (email == "")
+            {
+                $('#form-alert').show();
+                $('#form-alert').html("Username can't be blank");
+                 
+                return false;
+            }
+            else
+            {
+                $('#form-alert').hide();
+                $('#form-alert').html('');
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '//' + host_url + '/users/create',
+                    contentType:  'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: JSON.stringify({ 'username': email, 'password': password }),
+                    success: function(response){
+                        window.location.replace('//' + host_url + '/community')
+                    },
+                    failure: function(error) {
+                        $('.invalid-feedback').html('Username Taken');
+                        $('#email').addClass('is-invalid');
+                    }
+                });
+            }
+            
         });

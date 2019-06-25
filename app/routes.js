@@ -7,7 +7,7 @@ router.use('/users', require('./components/users/users_routes'))
 
 //default to main entry route
 router.get('/', function(req, res) {
-    res.render('default/index')
+    res.render('default/index', { host: req.headers.host })
 })
 
 module.exports = router

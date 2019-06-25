@@ -63,6 +63,14 @@ block content
             let password = $('#password').val();
             let password_again = $('#password-again').val();
             
+            if (email == "")
+            {
+                $('#form-alert').show();
+                $('#form-alert').html("Username can't be blank");
+                 
+                return false;
+            }
+            
             if (password != password_again)
             {
                 $('#form-alert').show();
@@ -70,32 +78,22 @@ block content
                  
                 return false;
             }
-            else if (email == "")
-            {
-                $('#form-alert').show();
-                $('#form-alert').html("Username can't be blank");
-                 
-                return false;
-            }
-            else
-            {
-                $('#form-alert').hide();
-                $('#form-alert').html('');
-                
-                $.ajax({
-                    type: 'POST',
-                    url: '//' + host_url + '/users/create',
-                    contentType:  'application/json; charset=utf-8',
-                    dataType: 'json',
-                    data: JSON.stringify({ 'username': email, 'password': password }),
-                    success: function(response){
-                        window.location.replace('//' + host_url + '/community')
-                    },
-                    failure: function(error) {
-                        $('.invalid-feedback').html('Username Taken');
-                        $('#email').addClass('is-invalid');
-                    }
-                });
-            }
-            
+           
+            $('#form-alert').hide();
+            $('#form-alert').html('');
+
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/users/create',
+                contentType:  'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ 'username': email, 'password': password }),
+                success: function(response){
+                    window.location.replace('//' + host_url + '/community')
+                },
+                failure: function(error) {
+                    $('.invalid-feedback').html('Username Taken');
+                    $('#email').addClass('is-invalid');
+                }
+            });
         });

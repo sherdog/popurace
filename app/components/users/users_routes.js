@@ -37,7 +37,7 @@ router.post('/login', function(req, res) {
 	.catch(function(err) {
 		res.send(JSON.stringify({ status: 'error'}));	
 	})
-}
+});
 
 router.post('/create', function(req, res){
 	let user = req.body.username;

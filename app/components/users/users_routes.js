@@ -23,7 +23,7 @@ router.post('/create', function(req, res){
 	let user = req.body.username;
 	let pass = req.body.password;
 	
-	User.create({ username:  username, password: pass }, function (err, user) {
+	User.create({ username:  user, password: pass }, function (err, user) {
 	  if (err) return handleError(err);
 	   res.send({ status: 'success', user: user });
 	});

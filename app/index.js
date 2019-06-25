@@ -11,18 +11,8 @@ app.use('/static', express.static(path.resolve('public')))
 app.set('view options', { pretty: true })
 app.set('views', path.join(__dirname, 'components'))
 app.set('view engine', 'pug')
-
-var sess = {
-  secret: config.session.hash,
-  cookie: {}
-}
- 
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
-}
- 
-app.use(session(sess))
+console.log('Using hash: ' + config.session.hash)
+app.use(session({ secret: config.session.hash, cookie: { maxAge: 60000 }}))
 
 app.use(require('./routes'))
 

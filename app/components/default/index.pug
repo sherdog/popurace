@@ -31,10 +31,10 @@ block content
             let email = ($('#email').val()).trim();
             let password = $('#password').val();
             
-            if (email == "")
+            if (email == "" || password == "")
             {
                 $('#form-alert').show();
-                $('#form-alert').html("Username can't be blank");
+                $('#form-alert').html("Username/Password can't be blank");
                 return false;
             }
             
@@ -47,11 +47,18 @@ block content
                 contentType:  'application/json; charset=utf-8',
                 dataType: 'json',
                 data: JSON.stringify({ 'username': email, 'password': password }),
-                success: function(response){
-                    window.location.replace('//' + host_url + '/community')
+                success: function(response) {
+                    if (response.status == 'error') {
+                       $('#form-alert').show();
+                       $('#form-alert').html("Invalid Username/Password");
+                    }
+                    else {
+                         window.location.replace('//' + host_url + '/community')
+                    }
                 },
                 failure: function(error) {
-                    
+                    $('#form-alert').show();
+                    $('#form-alert').html("Unknown error: try again");
                 }
             });
         });

@@ -6,7 +6,7 @@ block content
                 form.text-center.border.border-inverse.p-5.signin_form
                     p.h4.mb-4 Create Account
                     p Create your free account, fill in the form below.
-                    p#form-alert.hidden.alert.alert-danger
+                    p(id="form-alert", class="alert alert-danger", style="display:none;")
                     input#email.form-control.mb-4(type='text', placeholder='Username', required)
                     .valid-feedback Username Available!
                     .invalid-feedback Username Taken!

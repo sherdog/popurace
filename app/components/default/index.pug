@@ -30,7 +30,6 @@ block content
             
             let email = ($('#email').val()).trim();
             let password = $('#password').val();
-            let password_again = $('#password-again').val();
             
             if (email == "")
             {
@@ -52,8 +51,7 @@ block content
                     window.location.replace('//' + host_url + '/community')
                 },
                 failure: function(error) {
-                    $('.invalid-feedback').html('Username Taken');
-                    $('#email').addClass('is-invalid');
+                    
                 }
             });
         });

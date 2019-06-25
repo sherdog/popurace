@@ -32,7 +32,7 @@ router.post('/login', function(req, res) {
 		if (!bcrypt.compareSync(pass, user.password)) {
 			res.send(JSON.stringify({ status: 'error' }));
 		}
-		res.send(JSON.stringify({ status: 'success' })
+		res.send(JSON.stringify({ status: 'success' }))
 	})
 	.catch(function(err) {
 		res.send(JSON.stringify({ status: 'error'}));	

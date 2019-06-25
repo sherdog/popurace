@@ -17,7 +17,16 @@ router.post('/check_username', function(req, res){
     .catch(function(err){
       res.send(err);
     })
-
 })
+
+router.post('/create', function(req, res){
+	let user = req.body.username;
+	let pass = req.body.password;
+	
+	User.create({ username:  username, password: pass }, function (err, user) {
+	  if (err) return handleError(err);
+	   res.send({ status: 'success', user: user });
+	});
+}
 
 module.exports = router

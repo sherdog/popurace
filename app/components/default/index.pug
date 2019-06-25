@@ -5,8 +5,9 @@ block content
             .col-lg-4.offset-lg-4
                 form.text-center.border.border-inverse.p-5.signin_form
                     p.h4.mb-4 Sign in
-                    input#defaultLoginFormEmail.form-control.mb-4(type='text', placeholder='Username')
-                    input#defaultLoginFormPassword.form-control.mb-4(type='password', placeholder='Password')
+                    p(id="form-alert", class="alert alert-danger", style="display:none;")
+                    input#email.form-control.mb-4(type='text', placeholder='Username')
+                    input#password.form-control.mb-4(type='password', placeholder='Password')
                     .d-flex.justify-content-around
                         div
                             .custom-control.custom-checkbox
@@ -20,3 +21,39 @@ block content
                         a(href='/users') Register
                     p
                         a(href="/community") Go to community
+script.
+
+        let host_url = '#{ host }';
+        
+        $('form').submit(function(e) {
+            e.preventDefault();
+            
+            let email = ($('#email').val()).trim();
+            let password = $('#password').val();
+            let password_again = $('#password-again').val();
+            
+            if (email == "")
+            {
+                $('#form-alert').show();
+                $('#form-alert').html("Username can't be blank");
+                return false;
+            }
+            
+            $('#form-alert').hide();
+            $('#form-alert').html('');
+
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/users/login',
+                contentType:  'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ 'username': email, 'password': password }),
+                success: function(response){
+                    window.location.replace('//' + host_url + '/community')
+                },
+                failure: function(error) {
+                    $('.invalid-feedback').html('Username Taken');
+                    $('#email').addClass('is-invalid');
+                }
+            });
+        });

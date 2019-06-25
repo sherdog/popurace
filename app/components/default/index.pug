@@ -4,6 +4,7 @@ block content
         .row
             .col-lg-4.offset-lg-4
                 form.text-center.border.border-inverse.p-5.signin_form
+                    p views: #{ views }
                     p.h4.mb-4 Sign in
                     p(id="form-alert", class="alert alert-danger", style="display:none;")
                     input#email.form-control.mb-4(type='text', placeholder='Username')

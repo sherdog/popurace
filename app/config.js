@@ -11,6 +11,10 @@ config.mongodb = {
     host: process.env.MONGODB_HOST || 'mongodb://sherdog:michael5@209.124.64.183:27017/community'
 }
 
+config.session = {
+    hash: "mb4_+3@c%3LQ=QYPkXwBX#vbh#H32NHv-CbpXvRjhx6*$@AJZx-f%EmsRkhZjsH6"   
+}
+
 if (PRODUCTION)
 {
     //set to the prod IP when that time comes.

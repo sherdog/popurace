@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
- Schema = mongoose.Schema
- const bcrypt = require('bcrypt')
- const SALT_WORK_FACTOR = 10
+Schema = mongoose.Schema
+const bcrypt = require('bcrypt')
+const SALT_WORK_FACTOR = 10
 
 const UserSchema = new Schema({
 	username: { type: String, index: { unique: true } },
@@ -10,17 +10,6 @@ const UserSchema = new Schema({
 		versionKey: false 
 	}
 );
-
-const User = module.exports = mongoose.model('User', UserSchema);
-
-module.exports.getUserByID = function(id, callback) {
-	User.findById(id, callback);
-}
-
-module.exports.getUserByUsername = function(username, callback) {
-	var query = { username: username};
-	User.findOne(query, callback);
-}
 
 UserSchema.pre('save', function(next) {
 	var user = this;
@@ -45,3 +34,5 @@ UserSchema.methods.comparePassword = function (password, callback) {
 		callback(null, isMatch);
 	});
 };
+
+let User = module.exports = mongoose.model('user', UserSchema);

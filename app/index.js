@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const app = express();
 
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 app.use('/static', express.static(path.resolve('public')))
 app.set('view options', { pretty: true })
 app.set('views', path.join(__dirname, 'components'))

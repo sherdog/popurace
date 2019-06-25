@@ -5,16 +5,52 @@ block content
             .col-lg-4.offset-lg-4
                 form.text-center.border.border-inverse.p-5.signin_form
                     p.h4.mb-4 Create Account
-                    input#defaultLoginFormEmail.form-control.mb-4(type='text', placeholder='Username')
-                    input#defaultLoginFormPassword.form-control.mb-4(type='password', placeholder='Password')
+                    p Create your free account, fill in the form below.
+                    input#email.form-control.mb-4(type='text', placeholder='Username', required)
+                    .valid-feedback Username Available!
+                    .invalid-feedback Username Taken!
+                    input#password.form-control.mb-4(type='password', placeholder='Password',  required)
+                    .d-flex.justify-content-around
+                    input#password-again.form-control.mb-4(type='password', placeholder='Password Again')
                     .d-flex.justify-content-around
                     button.btn.btn-info.btn-block.my-4(type='submit', id='create_account') Create Account
 
     script.
+
+        let host_url = '#{ host }';
+
+        $('#email').change(function(){
+            //validate blank field.
+            let email = ($('#email').val()).trim();
+            $('#email').removeClass('is-invalid');
+            $('#email').removeClass('is-valid');
+            
+            if (email === "") {
+                $('#email').addClass('is-invalid');
+                $('.invalid-feedback').html('Username Required');
+                return;
+            }
+
+            $('#email > .is-invalid').html('Username Required');
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/users/check_username',
+                contentType:  'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ 'username': $('#email').val() }),
+                success: function(response){
+                    $('#email').addClass('is-valid');
+                },
+                failure: function(error) {
+                    $('.invalid-feedback').html('Username Taken');
+                    $('#email').addClass('is-invalid');
+                }
+            });
+        });
         $('form').submit(function(e) {
             e.preventDefault();
-
-            alert('Create Account Form Submitted');
+            
+            //check if username is available.
 
             return false;
         });

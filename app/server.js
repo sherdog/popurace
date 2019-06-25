@@ -1,6 +1,7 @@
 const app = require('./index')
 const http = require('http').Server(app)
 const { Connection } = require('./db')
+const socket = require('./socket')(http)
 const fs = require('fs')
 const path = require('path')
 

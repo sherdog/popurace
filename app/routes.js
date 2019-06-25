@@ -7,13 +7,10 @@ router.use('/users', require('./components/users/users_routes'))
 
 //default to main entry route
 router.get('/', function(req, res) {
-    
      if (req.session.views) {
         req.session.views++
-        
       } else {
         req.session.views = 1
-        res.end('welcome to the session demo. refresh!')
       }
     
     res.render('default/index', { host: req.headers.host, views: req.session.views })

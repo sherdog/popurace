@@ -21,10 +21,10 @@ router.post('/check_username', function(req, res){
 })
 
 router.post('/login', function(req, res) {
-	let user = req.body.username;
+	let username = req.body.username;
 	let pass = req.body.password;
 	
-	var user = User.findOne({ username: user })
+	User.findOne({ username: username })
 	.then(function(user){
 		if(user == "") {
 			res.send(JSON.stringify({ status: 'error'}));

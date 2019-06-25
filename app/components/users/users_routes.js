@@ -27,6 +27,6 @@ router.post('/create', function(req, res){
 	  if (err) return handleError(err);
 	   res.send({ status: 'success', user: user });
 	});
-}
+});
 
 module.exports = router

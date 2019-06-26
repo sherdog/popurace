@@ -3,7 +3,7 @@ block content
     header.bg-dark
         .container-fluid
             .row.float-right.p-2.no-gutters
-                a(id="disconnect", href="/" class="btn btn-primary float-right") Leave Chat
+                a(id="logout", href="#" class="btn btn-primary float-right") Logout
     #content
         .continer-fluid
             .row.no-gutters
@@ -22,8 +22,33 @@ block content
                         button(class='btn btn-primary btn-block') Send
 
     script.
-        var myVar = '#{ host }';
-        var socket = io.connect(myVar);
+        let host_url = '#{ host }';
+        let socket = io.connect(host_url);
+
+        $('#logout').click(function(e){
+            
+            e.preventDefault();
+            
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/users/logout',
+                contentType:  'application/json; charset=utf-8',
+                data: JSON.stringify({ 'logout': true }),
+                dataType: 'json',
+                success: function(response){
+                    if (response.status == 'ok') {
+                        window.location.replace('//' + host_url + '/')
+                    }
+                    else {
+                        
+                    }
+                },
+                failure: function(error) {
+                    $('.invalid-feedback').html('Username Taken');
+                    $('#email').addClass('is-invalid');
+                }
+            });
+        })
 
         $('form').submit(function(e) {
             e.preventDefault();
@@ -51,5 +76,5 @@ block content
         $('#userList > li:contains("'+username+'")').remove();
         });
 
-        var username = prompt('Enter your username');
-        socket.emit('username', username);
+        let chatName = '#{session.username}'
+        socket.emit('username', chatName);

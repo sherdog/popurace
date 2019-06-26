@@ -1,9 +1,9 @@
 const express = require('express')
 const router = new express.Router();
 
-//define all routes here.
-router.use('/community', require('./components/community/community_routes'))
-router.use('/users', require('./components/users/users_routes'))
+//define all routes "controllers" here.
+router.use('/community', require('./components/community/community_controller'))
+router.use('/users', require('./components/users/users_controller'))
 
 //default to main entry route
 router.get('/', function(req, res) {

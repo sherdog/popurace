@@ -8,34 +8,19 @@ const path = require('path')
 //include some sort of logging.. need to research
 console.log('Starting server instance')
 
-let port = 3000;
+let port = (process.env.PORT) ? process.env.PORT : 3000;
 
-//override port for dynamic seåtting by heroku
-if (process.env.PORT) {
-	port = process.env.PORT;
-}
+//start connection to mongo db
 Connection.connect()
-.then(con => {
-    //load all of routers/controller/middleware what have you.
-    console.log('Connected to mongo ' + con)
-    app.set('db', con);
+    .then(con => {
+        //set db instance to app, so it can be used globally.
+        app.set('db', con);
 
-    //load models
-	/*
-	const modelsPath = path.resolve(__dirname, 'models')
-    fs.readdirSync(modelsPath).forEach(file => {
-        console.log('model: ' + modelsPath + '/' + file)
-        require(modelsPath + '/' + file)
+        //start the server.
+        const server = http.listen(port, function() {
+            console.log('Listening on port ' + port)
+        });
     })
-	*/
-    
-    const server = http.listen(port, function() {
-        console.log('Listening on port ' + port)
-    });
-    
-})
-.catch(error => {
-    console.log('Error creating mongoose connection ', error)
-})
-
-
+    .catch(error => {
+        console.log('Error creating mongoose connection ', error)
+    })

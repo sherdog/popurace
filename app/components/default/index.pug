@@ -2,7 +2,7 @@ extends ../common/main
 block content
     .container
         .row
-            .col-lg-4.offset-lg-4
+            .col-lg-6.offset-lg-3
                 form.text-center.border.border-inverse.p-5.signin_form
                     p views: #{ views }
                     p.h4.mb-4 Sign in
@@ -16,8 +16,8 @@ block content
                             label.custom-control-label(for='defaultLoginFormRemember') Remember me
                     button.btn.btn-info.btn-block.my-4(type='submit') Sign in
                     p
-                        | Not a member?
-                        a(href='/users') Register
+                        | Not a member? 
+                        a(href='/users') Create Account
     script.
 
         let host_url = '#{ host }';
@@ -50,7 +50,7 @@ block content
                        $('#form-alert').html("Invalid Username/Password");
                     }
                     else {
-                         window.location.replace('//' + host_url + '/community')
+                         window.location.replace('//' + host_url + '/users/join-community')
                     }
                 },
                 failure: function(error) {

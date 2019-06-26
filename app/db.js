@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
 const config = require('./config');
+
+mongoose.Promise = global.Promise
+
 class Connection {
     static connect() {
         if ( this.db ) return Promise.resolve(this.db)

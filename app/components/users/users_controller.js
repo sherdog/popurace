@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../../models/user_model')
+const Community = require('../../models/community_model')
 const bcrypt = require('bcrypt')
-
 
 //------- GET ROUTES --------- //
 router.get('/', function(req, res) {
@@ -16,21 +16,19 @@ router.get('/join-community', function(req, res) {
 	res.render('community/join_community', { host: req.headers.host })
 })
 
-
 //------- POST ROUTES --------- //
 router.post('/join-community', function(req, res){
+	console.log('Trying to join a community')
 	
-	var community = require('../../models/community_model')
-
 	//check for open slot.
-	let query = { full: false }
-	community.findOne(query)
-		.then(function(community) {
+	var query = { full: false }
+	Community.findOne(query)
+		.then(function(communityData) {
 			//if null, we need to create a new one.
-			if (community != null)
+			if (communityData != null)
 			{
 				let update = { 
-					community: community._id
+					communityData: community._id
 				}
 				
 				console.log('User id: ' + User._id);
@@ -44,23 +42,23 @@ router.post('/join-community', function(req, res){
 			}
 			else {
 				//create new community.
-				community.create({}, function (err, communityData) {
+				Community.create({}, function (err, communityData) {
 					
 					if (err ) res.send({ status: 'error', error: err });
 					
-					console.log('User id: ' + User._id);
+					
 
-					let update = { 
-						community: communityData._id
-					}
-
-					console.log('Community id: ' + communityData._id);
-
-				   	User.update({_id: User._id }, update, function(err, userData) {
-						if (error) {
-							res.send(JSON.stringify({ status: 'error', error: err}))
-						}
-						res.send(JSON.stringify({status: 'ok', user: userData } ))
+					User.findOne({ _id: req.session.id})
+					.then(function(user) {
+						console.log('User id: ' + user._id);
+						console.log('Community id: ' + communityData._id);
+	
+							User.update({_id: user._id }, update, function(err, userData) {
+							if (error) {
+								res.send(JSON.stringify({ status: 'error', error: err}))
+							}
+							res.send(JSON.stringify({status: 'ok', user: userData } ))
+						})
 					})
 				});
 			}
@@ -107,6 +105,7 @@ router.post('/login', function(req, res) {
 			//Logged in successfully
 			req.session.logged_in = true
 			req.session.username = user.username
+			req.session.id = user._id;
 
 				res.send(JSON.stringify({ status: 'ok' }))
 			})

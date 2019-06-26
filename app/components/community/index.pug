@@ -1,9 +1,15 @@
 extends ../common/layout
 block content
-    header.bg-dark
-        .container-fluid
-            .row.float-right.p-2.no-gutters
-                a(id="logout", href="#" class="btn btn-primary float-right") Logout
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+        button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarContents" aria-expanded="false" aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+        a.navbar-brand(href="/") Community
+        .collapse.navbar-collapse#navbarContents
+            ul.navbar-nav.mr-auto.mt-2.lt-lg-0.float-right
+                li.nav-item
+                    a.nav-link(href="/") Home
+                li.nav-item
+                    a.nav-link.float-right(href="/") Logout
     #content
         .continer-fluid
             .row.no-gutters
@@ -24,6 +30,37 @@ block content
     script.
         let host_url = '#{ host }';
         let socket = io.connect(host_url);
+        let channel = '#{ channel }';
+
+        let chatName = '#{session.username}'
+
+        socket.on('connect', function(){
+            socket.emit('adduser', chatName, channel);
+        })
+
+        socket.on('updatechat', function(username, data){
+            $('#messages').append($('<li>').html('<b>'+username+'</b>: ' + data));
+        })
+
+        socket.on('updateusers', function(usernames) {
+            
+            $('#userList').html('');
+            $.each(usernames, function(key, val){
+                $('#userList').append($('<div id="val">').html(val));
+            })
+        });
+
+        $('form').submit(function(e) {
+            e.preventDefault();
+            let txt = ($('#txt').val());
+            if (txt.trim() == "")
+                return;
+                
+            socket.emit('sendchat', txt);
+            $('#txt').val('');
+
+            return false;
+        });
 
         $('#logout').click(function(e){
             
@@ -49,23 +86,20 @@ block content
                 }
             });
         })
-
-        $('form').submit(function(e) {
-            e.preventDefault();
-
-            socket.emit('chat_message', $('#txt').val());
-            $('#txt').val('');
-
-            return false;
+    
+        /*
+        socket.emit('username', chatName);
+        
+        socket.on('connect', function(){
+            socket.emit('room', room_channel);
         });
-
+        
         socket.on('chat_message', function(msg){
             $('#messages').append($('<li>').html(msg));
         });
 
         socket.on('is_online', function(username){
             $('#messages').append($('<li>').html(username));
-            
         });
 
         socket.on('enter_chat', function(username){
@@ -73,8 +107,7 @@ block content
         });
 
         socket.on('leave_chat', function(username){
-        $('#userList > li:contains("'+username+'")').remove();
+            $('#userList > li:contains("'+username+'")').remove();
         });
-
-        let chatName = '#{session.username}'
-        socket.emit('username', chatName);
+        */
+        

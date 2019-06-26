@@ -13,8 +13,6 @@ block content
         $('#join_community').click(function(e){
             e.preventDefault();
 
-            alert('Yeah buddy. join a community!');
-
             $.ajax({
                 type: 'POST',
                 url: '//' + host_url + '/users/join-community',
@@ -27,7 +25,7 @@ block content
                        $('#form-alert').html("Invalid Username/Password");
                     }
                     else {
-                         //window.location.replace('//' + host_url + '/community')
+                         window.location.replace('//' + host_url + '/community/room/' + response.community)
                     }
                 },
                 failure: function(error) {

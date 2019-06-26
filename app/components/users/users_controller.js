@@ -3,6 +3,7 @@ const router = express.Router()
 const User = require('../../models/user_model')
 const Community = require('../../models/community_model')
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 
 //------- GET ROUTES --------- //
 router.get('/', function(req, res) {
@@ -17,55 +18,58 @@ router.get('/join-community', function(req, res) {
 })
 
 //------- POST ROUTES --------- //
-router.post('/join-community', function(req, res){
+router.post('/join-community', function(req, res) {
+	
 	console.log('Trying to join a community')
 	
 	//check for open slot.
 	var query = { full: false }
+
 	Community.findOne(query)
-		.then(function(communityData) {
-			//if null, we need to create a new one.
-			if (communityData != null)
-			{
-				let update = { 
-					communityData: community._id
+	.then(function(communityData) {
+		//if null, we need to create a new one.
+		if (communityData)
+		{
+			User.findById(mongoose.Types.ObjectId( req.session.user ))
+			.then(function(userData) {
+
+				userData.community = communityData._id;
+				userData.save()
+				.then(function(updatedUser) {
+					res.send(JSON.stringify({ status: 'ok', community: communityData._id } ))
+				})
+				.catch(function(err){
+					res.send(JSON.stringify({ status: 'error', msg: 'error joining community'}));
+				})
+			})
+		}
+		else {
+			//create new community.
+			Community.create({}, function (err, communityData) {
+				
+				if (err ) {
+					res.send({ status: 'error', error: err })
+					console.log("error creating community: " + err)
 				}
 				
-				console.log('User id: ' + User._id);
-	
-				User.update({_id: User._id }, update, function(err, userData) {
-					if (error) {
-						res.send(JSON.stringify({ status: 'error', error: err}))
-					}
-					res.send(JSON.stringify({status: 'ok', user: userData } ))
-				})
-			}
-			else {
-				//create new community.
-				Community.create({}, function (err, communityData) {
-					
-					if (err ) res.send({ status: 'error', error: err });
-					
-					
-
-					User.findOne({ _id: req.session.id})
-					.then(function(user) {
-						console.log('User id: ' + user._id);
-						console.log('Community id: ' + communityData._id);
-	
-							User.update({_id: user._id }, update, function(err, userData) {
-							if (error) {
-								res.send(JSON.stringify({ status: 'error', error: err}))
-							}
-							res.send(JSON.stringify({status: 'ok', user: userData } ))
-						})
+				User.findById(req.session.id)
+				.then(function(user) {
+					User.update({_id: user._id }, update, function(err, userData) {
+						if (error) {
+							res.send(JSON.stringify({ status: 'error', error: err}))
+						}
+						res.send(JSON.stringify({status: 'ok', community: communityData._id } ))
 					})
-				});
-			}
-		})
-		.catch(function(err) {
-			res.send(JSON.stringify({ status: 'error', error: err}));
-		})
+				})
+				.catch(function(err){
+					console.log('Error saving ' + err)
+				})
+			});
+		}
+	})
+	.catch(function(err) {
+		res.send(JSON.stringify({ status: 'error', error: err}));
+	})
 })
 
 router.post('/check_username', function(req, res) {
@@ -94,7 +98,7 @@ router.post('/login', function(req, res) {
 	let pass = req.body.password;
 	
 	User.findOne({ username: username })
-		.then(function(user){
+		.then(function(user) {
 			if(user == "") {
 				res.send(JSON.stringify({ status: 'error'}))
 			}
@@ -105,7 +109,7 @@ router.post('/login', function(req, res) {
 			//Logged in successfully
 			req.session.logged_in = true
 			req.session.username = user.username
-			req.session.id = user._id;
+			req.session.user = user._id;
 
 				res.send(JSON.stringify({ status: 'ok' }))
 			})

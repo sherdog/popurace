@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt')
 const SALT_WORK_FACTOR = 10
 
 let communitySchema = new mongoose.Schema({
-	_id: Number,
 	community_name: { type: String, default: "" },
 	id: { type: String, default: "" },
 	full: { type: Boolean, default: false },
@@ -12,7 +11,8 @@ let communitySchema = new mongoose.Schema({
 	users: [
 		{
 			type: Schema.Types.ObjectId,
-			default: null
+			default: null,
+			ref: "User"
 		}
 	]
 })

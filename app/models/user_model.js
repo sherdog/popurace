@@ -4,14 +4,15 @@ const bcrypt = require('bcrypt')
 const SALT_WORK_FACTOR = 10
 
 const UserSchema = new Schema({
-	_id: Number,
 	username: { type: String, index: { unique: true } },
 	password: { type: String, required: true },
 	community: {
 		type: Schema.Types.ObjectId,
-		ref: 'Community'
+		ref: 'community',
+		default: null
 	},
 	}, { 
+		strict: false,
 		versionKey: false 
 	}
 );

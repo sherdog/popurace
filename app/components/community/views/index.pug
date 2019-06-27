@@ -1,4 +1,4 @@
-extends ../common/layout
+extends ../../common/layout
 block content
     nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarContents" aria-expanded="false" aria-label="Toggle navigation")
@@ -9,15 +9,14 @@ block content
                 li.nav-item
                     a.nav-link(href="/") Home
                 li.nav-item
-                    a.nav-link.float-right(href="/") Logout
-    #content
-        .continer-fluid
-            .row.no-gutters
-                .col-lg-10.col-md-10.col-sm-10
+                    a#logout.nav-link.float-right(href="#") Logout
+    #content.h-100
+        .continer-fluid.h-100
+            .row.no-gutters.h-100
+                #messageContainer.col-lg-10.col-md-10.col-sm-10
                     ul#messages
-                div(class="col-lg-2 bg-light col-md-2 col-sm-2" )
-                    h5 Users
-                        div#userList
+                .col-lg-2.bg-light.col-md-2.col-sm-2
+                    div#userList.p-2
     footer.bg-dark
         form(action='./', method='post', id='chatForm')
             .container-fluid
@@ -31,7 +30,6 @@ block content
         let host_url = '#{ host }';
         let socket = io.connect(host_url);
         let channel = '#{ channel }';
-
         let chatName = '#{session.username}'
 
         socket.on('connect', function(){
@@ -40,6 +38,10 @@ block content
 
         socket.on('updatechat', function(username, data){
             $('#messages').append($('<li>').html('<b>'+username+'</b>: ' + data));
+            $('#messageContainer').animate({
+                scrollTop: $("#messages li").last().offset().top
+            },
+            1000);
         })
 
         socket.on('updateusers', function(usernames) {
@@ -85,29 +87,4 @@ block content
                     $('#email').addClass('is-invalid');
                 }
             });
-        })
-    
-        /*
-        socket.emit('username', chatName);
-        
-        socket.on('connect', function(){
-            socket.emit('room', room_channel);
         });
-        
-        socket.on('chat_message', function(msg){
-            $('#messages').append($('<li>').html(msg));
-        });
-
-        socket.on('is_online', function(username){
-            $('#messages').append($('<li>').html(username));
-        });
-
-        socket.on('enter_chat', function(username){
-            $('#userList').append($('<li>').html(username));
-        });
-
-        socket.on('leave_chat', function(username){
-            $('#userList > li:contains("'+username+'")').remove();
-        });
-        */
-        

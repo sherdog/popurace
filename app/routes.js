@@ -2,8 +2,8 @@ const express = require('express')
 const router = new express.Router();
 
 //define all routes "controllers" here.
-router.use('/community', require('./components/community/community_controller'))
-router.use('/users', require('./components/users/users_controller'))
+router.use('/community', require('./components/community/controllers/community_controller'))
+router.use('/users', require('./components/users/controllers/users_controller'))
 
 //default to main entry route
 router.get('/', function(req, res) {

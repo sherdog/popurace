@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const User = require('../../models/user_model')
-const Community = require('../../models/community_model')
+const User = require('../models/user_model')
+const Community = require('../../community/models/community_model')
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
@@ -14,7 +14,7 @@ router.get('/join-community', function(req, res) {
 	//Of course we need to check this user is in a community,
 	//if so, we just take them to the community landing page.
 	//but for now. meh.
-	res.render('community/join_community', { host: req.headers.host })
+	res.render('./community/views/join_community', { host: req.headers.host })
 })
 
 //------- POST ROUTES --------- //

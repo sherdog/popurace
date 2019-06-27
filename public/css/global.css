@@ -5,16 +5,16 @@ html, body {
     margin: 0;
     padding: 0;
 }
-body {  overflow: hidden; }
-
 
 #messages { list-style-type: none; margin: 0; padding: 0; }
 #messages li { padding: 5px 10px; }
 #messages li:nth-child(odd) { background: #eee; }
-.h-100 { height:100%; }
 #userList { min-height: 100%; }
 #messageViewport { min-height: 100%; height: calc(100vh-20px); }
-
+#messageContainer {
+    max-height: 100%;
+    overflow-y: auto;
+}
 #content {
     max-height: calc(100% - 120px);
     padding: 0px 0px !important;

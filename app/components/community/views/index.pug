@@ -37,7 +37,7 @@ block content
         })
 
         socket.on('updatechat', function(username, data){
-            $('#messages').append($('<li>').html('<b>'+username+'</b>: ' + data));
+            $('#messages').append($('<li>').html('<small>'+ getFormattedDate() + '</small> <b>'+username+'</b>: ' + data));
             $('#messageContainer').animate({
                 scrollTop: $("#messages li").last().offset().top
             },
@@ -63,6 +63,13 @@ block content
 
             return false;
         });
+
+        function getFormattedDate() {
+            var date = new Date();
+            var str = date.getHours() + ":" + date.getMinutes();
+
+            return str;
+        }
 
         $('#logout').click(function(e){
             

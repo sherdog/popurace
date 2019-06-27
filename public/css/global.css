@@ -8,7 +8,6 @@ html, body {
 
 #messages { list-style-type: none; margin: 0; padding: 0; }
 #messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
 #userList { min-height: 100%; }
 #messageViewport { min-height: 100%; height: calc(100vh-20px); }
 #messageContainer {
@@ -21,6 +20,20 @@ html, body {
     margin-top: 0px !important;
 }
 
+.bg-light { 
+    background-color: #1e2125 !important;
+}
+
+footer.bg-dark { 
+    background-color: #1e2125 !important;
+}
+
+#txt {
+    width: 100%;
+    background-color: #1e2125 !important;
+    border: 0px;
+    border-radius: 0px;
+}
 
 header {
     width: 100%;

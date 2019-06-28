@@ -8,7 +8,18 @@ router.get('/', function(req, res) {
 
 //default to main entry route
 router.get('/sign-in', function(req, res) {
-    res.render('users/views/signin', { host: req.headers.host })
+    //Handle sign-in redirects
+    //and provide some error handling. e.g session expires, requires login etc.
+    let flashData = {}
+
+    if (req.session.flash) {
+        flashData.error = true;
+        flashData.message = req.session.flash;
+    }
+    if (req.session.dest) {
+        flashData.dest = req.session.dest
+    }
+    res.render('users/views/signin', { host: req.headers.host, flash:flashData })
 })
 
 //default to main entry route

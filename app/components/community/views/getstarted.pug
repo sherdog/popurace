@@ -1,16 +1,70 @@
 extends ../../common/main
 block content
     .container
-        .row
-            .col-lg-6.offset-lg-3
-                h1 Welcome! Join a community!
-                hr
-                a(id="join_community", class="btn btn-primary", href="") Join Community
-    
+        .row.justify-content-center
+            .card.get-started-card.shadow.p-3.mb-5.bg-white.rounded(style="max-width: 400px;")
+                .card-body
+                    .card-title
+                        h5.font-weight-bold Join a community
+                    .card-text
+                        p.mb-2 Enter in the invite code, you should have received this by email 
+                            |  or by a friend.
+                            form#join-community.form-inline(action="#")
+                                .col-auto.p-0
+                                    input.form-control.mb-2(type="text", placeholder="Invite Code")
+                                .col-auto.p-2
+                                    button.btn.btn-primary.mb-2(type="submit") Join
+                .card-body
+                    .card-title
+                        h5.font-weight-bold Create a community
+                    .card-text
+                        p#community_name_validator.alert.alert-danger(style="display:none")
+                        p.mb-2 Enter in the name of your community
+                            form#community_name_form.form-inline(action="#")
+                                .col-auto.p-0
+                                    input#community_name.form-control.mb-2(type="text", placeholder="Community Name")
+                                .col-auto.p-2
+                                    button#create-community.btn.btn-primary.mb-2(type="submit") Create
     
     script.
         let host_url = '#{ host }';
-        
+        $('#community_name_form').submit(function(e) {
+            e.preventDefault();
+            $('#community_name_validator').hide();
+            $('#community_name_validator').html('');
+
+            let communityName =  $('#community_name').val().trim();
+            if (communityName == "") {
+                $('#community_name_validator').show();
+                $('#community_name_validator').html('Enter in a valid name');
+                return false;
+            }
+
+            let data = { 'community_name': $('#community_name').val() }
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/community/check_name',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    if (response.status == 'ok') {
+                        if(response.valid) {
+                            window.location = '/community/room/'+response.community_id;
+                        } else {
+                           $('#community_name_validator').show();
+                           $('#community_name_validator').html("Community name taken");
+                        }
+                    }
+                    else {
+                        
+                    }
+                },
+                failure: function(error) {
+
+                }
+            })
+        })
         $('#join_community').click(function(e){
             e.preventDefault();
 

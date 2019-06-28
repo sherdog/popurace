@@ -11,4 +11,22 @@
     height: 60px; /* Set the fixed height of the footer here */
     line-height: 60px; /* Vertically center the text there */
     background-color: #f5f5f5;
-  }
+}
+
+.get-getstarted-box {
+    max-width: 400px;
+}
+
+.get-getstarted-box p {
+    font-size: 1rem;
+}
+
+.get-started-container {
+    min-height:400px;
+    min-width: 500px;
+}
+
+.get-started-card {
+    margin-top:50px;
+    border:0px;
+}

@@ -4,6 +4,11 @@ block content
         .row
             .col-lg-6.offset-lg-3
                 form.text-center.border.border-inverse.p-5.signin_form
+                    #flash
+                        if flash.message
+                            p.alert.alert-danger= flash.message
+                        if flash.dest
+                            input(type="hidden", value=flash.dest)
                     p.h4.mb-4 Sign in
                     p(id="form-alert", class="alert alert-danger", style="display:none;")
                     input#email.form-control.mb-4(type='text', placeholder='Username')

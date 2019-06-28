@@ -1,22 +1,13 @@
 extends ../common/main
 block content
-    .container
-        .row
-            .col-lg-6.offset-lg-3
-                form.text-center.border.border-inverse.p-5.signin_form
-                    p.h4.mb-4 Sign in
-                    p(id="form-alert", class="alert alert-danger", style="display:none;")
-                    input#email.form-control.mb-4(type='text', placeholder='Username')
-                    input#password.form-control.mb-4(type='password', placeholder='Password')
-                    .d-flex.justify-content-around
-                        div
-                            .custom-control.custom-checkbox
-                                input#defaultLoginFormRemember.custom-control-input(type='checkbox')
-                            label.custom-control-label(for='defaultLoginFormRemember') Remember me
-                    button.btn.btn-info.btn-block.my-4(type='submit') Sign in
-                    p
-                        | Not a member? 
-                        a(href='/users') Create Account
+    .position-relative.overflow-hidden.p-3.p-md-5.m-md-5.bg-light
+            .col-md-6.p-lg-6.mx-auto.my-6
+                h1.display-4.font-weight-bold Welcome to Community!
+                p.lead.font-weight-normal Create a community, invite your friends, and grow into a modern civilization
+                a.btn.btn-outline-secondary(href="/get-started") Get Started
+    footer.footer.bg-info
+        .container
+            span.text-white Create, Gather and Grow your prosporous community.
     script.
 
         let host_url = '#{ host }';

@@ -7,12 +7,12 @@ router.get('/', function(req, res) {
 })
 
 //default to main entry route
-router.get('/signin', function(req, res) {
+router.get('/sign-in', function(req, res) {
     res.render('users/views/signin', { host: req.headers.host })
 })
 
 //default to main entry route
-router.get('/getstarted', function(req, res) {
+router.get('/get-started', function(req, res) {
     res.render('community/views/getstarted', { host: req.headers.host })
 })
 

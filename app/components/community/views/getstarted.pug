@@ -1,0 +1,37 @@
+extends ../../common/main
+block content
+    .container
+        .row
+            .col-lg-6.offset-lg-3
+                h1 Welcome! Join a community!
+                hr
+                a(id="join_community", class="btn btn-primary", href="") Join Community
+    
+    
+    script.
+        let host_url = '#{ host }';
+        
+        $('#join_community').click(function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/users/join-community',
+                contentType:  'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ 'join': true }),
+                success: function(response) {
+                    if (response.status == 'error') {
+                       $('#form-alert').show();
+                       $('#form-alert').html("Invalid Username/Password");
+                    }
+                    else {
+                         window.location.replace('//' + host_url + '/community/room/' + response.community)
+                    }
+                },
+                failure: function(error) {
+                    $('#form-alert').show();
+                    $('#form-alert').html("Unknown error: try again");
+                }
+            });
+        });

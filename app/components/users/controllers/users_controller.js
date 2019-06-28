@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 
 //------- GET ROUTES --------- //
 router.get('/', function(req, res) {
-	res.render('users/index', { host: req.headers.host });
+	res.render('users/views/index', { host: req.headers.host });
 });
 
 router.get('/join-community', function(req, res) {

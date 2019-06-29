@@ -1,0 +1,112 @@
+extends ../../common/main
+block content
+    .container
+        .row
+            .col-lg-6.offset-lg-3
+                form.text-center.border.border-inverse.p-5.signin_forms
+                    input(type="hidden" id="roomID" value=community_name)
+                    p.h4.mb-4 You've received a Community Invite!
+                    p Just create your username below.
+                    p(id="form-alert", class="alert alert-danger", style="display:none;")
+                    input#email.form-control.mb-4(type='text', placeholder='Username', required)
+                    .valid-feedback Username Available!
+                    .invalid-feedback Username Taken!
+                    input#password.form-control.mb-4(type='password', placeholder='Password',  required)
+                    .d-flex.justify-content-around
+                    input#password-again.form-control.mb-4(type='password', placeholder='Password Again')
+                    .d-flex.justify-content-around
+                    button.btn.btn-info.btn-block.my-4(type='submit', id='create_account') Create Account
+                    p.mb-4
+                        a(href="/",) Back to login
+    script.
+
+        let host_url = '#{ host }';
+
+        $('#email').change(function(){
+            //validate blank field.
+            let email = ($('#email').val()).trim();
+            $('#email').removeClass('is-invalid');
+            $('#email').removeClass('is-valid');
+            
+            if (email === "") {
+                $('#email').addClass('is-invalid');
+                $('.invalid-feedback').html('Username Required');
+                return;
+            }
+
+            $('#email > .is-invalid').html('Username Required');
+            $.ajax({
+                type: 'POST',
+                url: '//' + host_url + '/users/check_username',
+                contentType:  'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ 'username': $('#email').val() }),
+                success: function(response){
+                    if (response.available == true)
+                    {
+                        $('#email').addClass('is-valid');
+                    }
+                    else
+                    {
+                        $('.invalid-feedback').html('Username Taken');
+                        $('#email').addClass('is-invalid');
+                    }
+                },
+                failure: function(error) {
+                    $('.invalid-feedback').html('Username Taken');
+                    $('#email').addClass('is-invalid');
+                }
+            });
+        });
+        
+        $('form').submit(function(e) {
+            e.preventDefault();
+            
+            let email = ($('#email').val()).trim();
+            let password = $('#password').val();
+            let password_again = $('#password-again').val();
+            let room = $('#roomID').val();
+            let dest = $('#dest').val();
+
+            if (email == "")
+            {
+                $('#form-alert').show();
+                $('#form-alert').html("Username can't be blank");
+                 
+                return false;
+            }
+            
+            if (password != password_again)
+            {
+                $('#form-alert').show();
+                $('#form-alert').html('Password do no match');
+                 
+                return false;
+            }
+           
+            $('#form-alert').hide();
+            $('#form-alert').html('');
+
+            $.ajax({
+                type: 'POST',
+                url: '/users/create',
+                contentType:  'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({ 'username': email, 'password': password, 'room': room }),
+                success: function(response) {
+                    if (response.status == 'ok') {
+                        //if it returns a roomID
+                        //send them to the room
+                        if (response.room) {
+                            window.location.replace('/community/room/'+response.room)
+                        } else {
+                            window.location.replace('/community')
+                        }
+                    }
+                },
+                failure: function(error) {
+                    $('.invalid-feedback').html('Username Taken');
+                    $('#email').addClass('is-invalid');
+                }
+            });
+        });

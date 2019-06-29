@@ -143,12 +143,12 @@ router.post('/create', function(req, res){
 			//user needs to be redirect so let's add that
 			user.community = roomID;
 			user.save();
-
-			res.send({ status: 'ok', user: user, room: roomID });
-
+			
 			req.session.logged_in = true
 			req.session.username = user.username
 			req.session.user = user._id;
+
+			res.send({ status: 'ok', user: user, room: roomID });
 
 		} else {
 			

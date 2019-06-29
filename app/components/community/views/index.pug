@@ -7,11 +7,12 @@ block content
                     .card-title
                         h5.font-weight-bold Join a community
                     .card-text
+                        p#invite_code_validator.alert.alert-danger(style="display:none")
                         p.mb-2 Enter in the invite code, you should have received this by email 
                             |  or by a friend.
                             form#join-community.form-inline(action="#")
                                 .col-auto.p-0
-                                    input.form-control.mb-2(type="text", placeholder="Invite Code")
+                                    input#invite_code.form-control.mb-2(type="text"  placeholder="Invite Code")
                                 .col-auto.p-2
                                     button.btn.btn-primary.mb-2(type="submit") Join
                 .card-body
@@ -22,18 +23,22 @@ block content
                         p.mb-2 Enter in the name of your community
                             form#community_name_form.form-inline(action="#")
                                 .col-auto.p-0
-                                    input#community_name.form-control.mb-2(type="text", placeholder="Community Name")
+                                    input#community_name.form-control.mb-2(type="text"  placeholder="Community Name")
                                 .col-auto.p-2
                                     button#create-community.btn.btn-primary.mb-2(type="submit") Create
     
     script.
         let host_url = '#{ host }';
+
+        
+
         $('#community_name_form').submit(function(e) {
             e.preventDefault();
            console.log("Trying to submit.");
 
-            $('#community_name_validator').hide();
-            $('#community_name_validator').html('');
+            resetValidatorLabel('#community_name_validator');
+
+            let invite_code = $('#invite_code').val().trim();
 
             let communityName =  $('#community_name').val().trim();
             console.log("community name: " + communityName);
@@ -51,7 +56,7 @@ block content
                 url: '//' + host_url + '/community/check_name',
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
-                data: JSON.stringify(data),
+                data: JSON.stringify(data),s
                 success: function(response) {
                     console.log('response: ' + response);
                     if (response.status == 'ok') {
@@ -70,25 +75,46 @@ block content
 
                 }
             })
-        })
-        $('#join_community').click(function(e){
+        });
+
+
+        $('#join-community').submit(function(e) {
+
             e.preventDefault();
+
+            resetValidatorLabel('#invite_code_validator');
+
+            let invite_code = $('#invite_code').val().trim();
+
+            if (invite_code == "" || invite_code.length != 8)
+            {
+                $('#invite_code_validator').html('Please enter a valid code');
+                $('#invite_code_validator').show();
+
+                return;
+            }
+
             console.log('click.');
+
             $.ajax({
                 type: 'POST',
-                url: '//' + host_url + '/users/join-community',
+                url: '//' + host_url + '/community/join-community',
                 contentType:  'application/json; charset=utf-8',
                 dataType: 'json',
-                data: JSON.stringify({ 'join': true }),
+                data: JSON.stringify({ 'invite_code' : invite_code }),
                 success: function(response) {
                     console.log('Success. ' + JSON.stringify(response));
+
+                    resetValidatorLabel('#invite_code_validator');
+
                     if (response.status == 'error') {
-                       $('#form-alert').show();
-                       $('#form-alert').html("Invalid Username/Password");
+
+                        $('#invite_code_validator').html('Error, invalid invite code');
+                        $('#invite_code_validator').show();
                     }
                     else {
                         console.log('trying to redirect.');
-                        window.location.replace('//' + host_url + '/community/room/' + response.community)
+                        window.location = host_url + '/community/room/' + response.community_id
                     }
                 },
                 error: function(error) {
@@ -97,3 +123,8 @@ block content
                 }
             });
         });
+
+        function resetValidatorLabel(elementID) {
+            $(elementID).hide();
+            $(elementID).html('');
+        }

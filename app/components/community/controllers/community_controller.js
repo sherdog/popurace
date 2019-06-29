@@ -8,6 +8,20 @@ router.get('/', function(req, res) {
   res.render('./community/views/index', { host: req.headers.host })
 });
 
+router.get('/invitation/:id', function(req, res) {
+  
+  Community.findOne({ invite_code: req.params.id })
+  .then(function(communityData){
+    if (communityData) {
+      console.log("Found community: " + communityData);
+      res.render('community/views/join', { community_name:communityData._id, invite_code: req.params.id, host: req.headers.host });
+    } else {
+      res.render('community/views/join', { error:true, error_message: "Error, could not find invite code", host: req.headers.host });
+    }
+  })
+  //res.render('community/views/getstarted', { host: req.headers.host })
+})
+
 router.get('/error', function(req, res){
   res.render('./community/views/denied')
 })
@@ -28,9 +42,11 @@ router.get('/room/:id', function(req, res) {
       if (!req.session.logged_in) {
         req.session.flash = "You must be logged in to view the community room";
         req.session.room = roomID;
+        connectError = true;
         loggedIn = false;
       } else {
         //check if user has access to this room.
+        console.log("Checking user session: " + req.session.user);
         User.findById(mongoose.Types.ObjectId(req.session.user))
         .then(function(user) {
           console.log('user com: ' + user.community + ' room: ' + roomID);
@@ -72,6 +88,63 @@ router.get('/room/:id', function(req, res) {
   
   
 });
+
+router.post('/join-community', function(req, res) {
+
+  //validate code:
+  let invite_code = req.body.invite_code.trim();
+  let error = false;
+  let msg = "";
+
+  if (invite_code == "" || invite_code.length != 8)
+  {
+    error = true;
+    msg = "Invalid invite code";
+  }
+  else
+  {
+    //check for invite code in all community.
+    Community.findOne({invite_code: invite_code })
+    .then (function(comm){
+      if (!comm) {
+        error = false;
+        msg = "Invalid invite code";
+      } else {
+
+        User.findById(req.session.user)
+        .then(function(user){
+          if (!user) {
+            error = true;
+            msg = "Must be signed in to continue."
+          }
+          else
+          {
+            user.community_id = comm._id;
+            user.save();
+          }
+        })
+        .catch(function(err){
+          error = true;
+          msg = "Unexpected error occurred"
+        })
+        
+      }
+    })
+    .catch(function(err){
+      error = true;
+      msg = "Unexpected error occurred"
+    })
+
+    if (error)
+    {
+      res.send(JSON.stringify({status: "error", "msg": msg}));
+      return;
+    } else {
+      res.send(JSON.stringify({ status: "ok", community_id: comm._id }))
+      return;
+    }
+  }
+})
 
 router.post('/check_name', function(req, res){
 

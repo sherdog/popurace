@@ -1,0 +1,13 @@
+#inviteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="inviteModal" aria-hidden="true")
+    .modal-dialog(role="document")
+        .modal-content
+            .modal-header
+                h5.modal-title#inviteModalTitle Invite Codes
+                button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+            .modal-body
+                p Copy and paste the invite link to your friends
+                textarea(type="textarea" class="form-control")
+                    | http:// #{ host }/invitation/#{invite_code}
+            .modal-footer
+                button(type="button" class="btn btn-secondary" data-dismiss="modal") Close

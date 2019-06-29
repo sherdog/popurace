@@ -4,6 +4,11 @@ block content
         .row
             .col-lg-6.offset-lg-3
                 form.text-center.border.border-inverse.p-5.signin_form
+                    #sess
+                        if(sess && sess.room)
+                            input(type="hidden", id="roomID", value=sess.room)
+                    input(type="hidden" id="dest" value=dest)
+
                     p.h4.mb-4 Create Account
                     p Create your free account, fill in the form below.
                     p(id="form-alert", class="alert alert-danger", style="display:none;")
@@ -64,7 +69,9 @@ block content
             let email = ($('#email').val()).trim();
             let password = $('#password').val();
             let password_again = $('#password-again').val();
-            
+            let room = $('#roomID').val();
+            let dest = $('#dest').val();
+
             if (email == "")
             {
                 $('#form-alert').show();
@@ -86,12 +93,20 @@ block content
 
             $.ajax({
                 type: 'POST',
-                url: '//' + host_url + '/users/create',
+                url: '/users/create',
                 contentType:  'application/json; charset=utf-8',
                 dataType: 'json',
-                data: JSON.stringify({ 'username': email, 'password': password }),
-                success: function(response){
-                    window.location.replace('//' + host_url + '/community')
+                data: JSON.stringify({ 'username': email, 'password': password, 'room': room }),
+                success: function(response) {
+                    if (response.status == 'ok') {
+                        //if it returns a roomID
+                        //send them to the room
+                        if (response.room) {
+                            window.location.replace('/community/room/'+response.room)
+                        } else {
+                            window.location.replace('/community')
+                        }
+                    }
                 },
                 failure: function(error) {
                     $('.invalid-feedback').html('Username Taken');

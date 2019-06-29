@@ -50,7 +50,9 @@ block content
                 success: function(response) {
                     if (response.status == 'ok') {
                         if(response.valid) {
-                            window.location = '/community/room/'+response.community_id;
+                            if (response.logged_in) {
+                                window.location = '/community/room/'+response.community_id;
+                            }
                         } else {
                            $('#community_name_validator').show();
                            $('#community_name_validator').html("Community name taken");

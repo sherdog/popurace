@@ -24,7 +24,8 @@ router.get('/sign-in', function(req, res) {
 
 //default to main entry route
 router.get('/get-started', function(req, res) {
-    res.render('community/views/getstarted', { host: req.headers.host })
+    res.render('users/views/index', { dest: '/get-started'});
+    //res.render('community/views/getstarted', { host: req.headers.host })
 })
 
 

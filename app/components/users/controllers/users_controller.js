@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 
 //------- GET ROUTES --------- //
 router.get('/', function(req, res) {
-	res.render('users/views/index', { host: req.headers.host });
+	res.render('users/views/index', { host: req.headers.host, sess: req.session });
 });
 
 router.get('/join-community', function(req, res) {
@@ -96,6 +96,7 @@ router.post('/login', function(req, res) {
 
 	let username = req.body.username;
 	let pass = req.body.password;
+	let room = req.body.room;
 	
 	User.findOne({ username: username })
 		.then(function(user) {
@@ -111,8 +112,19 @@ router.post('/login', function(req, res) {
 			req.session.username = user.username
 			req.session.user = user._id;
 
-				res.send(JSON.stringify({ status: 'ok' }))
-			})
+			//if room is being submitted, lets up the users with that community room.
+			let roomID = "";
+			if (user.communty == "" && room) {
+				user.community = room;
+				user.save();
+				roomID = room;
+			} else {
+				roomID = user.community;
+			}
+			
+			res.send(JSON.stringify({ status: 'ok', room: roomID }))
+
+		})
 		.catch(function(err) {
 			res.send(JSON.stringify({ status: 'error'}));	
 		})
@@ -121,10 +133,31 @@ router.post('/login', function(req, res) {
 router.post('/create', function(req, res){
 	let user = req.body.username;
 	let pass = req.body.password;
+	let roomID = req.body.room;
+	
 	
 	User.create({ username:  user, password: pass }, function (err, user) {
 	  if (err ) res.send({ status: 'error', error: err });
-     res.send({ status: 'ok', user: user });
+		
+		if (roomID) {
+			//user needs to be redirect so let's add that
+			user.community = roomID;
+			user.save();
+
+			res.send({ status: 'ok', user: user, room: roomID });
+
+			req.session.logged_in = true
+			req.session.username = user.username
+			req.session.user = user._id;
+
+		} else {
+			
+			req.session.logged_in = true
+			req.session.username = user.username
+			req.session.user = user._id;
+
+			res.send({ status: 'ok', user: user });
+		}
 	});
 });
 

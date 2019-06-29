@@ -5,7 +5,6 @@ html, body {
     margin: 0;
     padding: 0;
     background-color:#272B30;
-    color:#CCCCCC;
 }
 
 #messages { list-style-type: none; margin: 0; padding: 0; }
@@ -20,6 +19,7 @@ html, body {
     max-height: calc(100% - 120px);
     padding: 0px 0px !important;
     margin-top: 0px !important;
+    color: #F5F5F5;
 }
 
 .btn-transparent {

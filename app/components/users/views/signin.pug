@@ -7,8 +7,8 @@ block content
                     #flash
                         if flash.message
                             p.alert.alert-danger= flash.message
-                        if flash.dest
-                            input(type="hidden", value=flash.dest)
+                        if flash.room
+                            input(type="hidden", value=flash.room)
                     p.h4.mb-4 Sign in
                     p(id="form-alert", class="alert alert-danger", style="display:none;")
                     input#email.form-control.mb-4(type='text', placeholder='Username')
@@ -47,14 +47,19 @@ block content
                 url: '//' + host_url + '/users/login',
                 contentType:  'application/json; charset=utf-8',
                 dataType: 'json',
-                data: JSON.stringify({ 'username': email, 'password': password }),
+                data: JSON.stringify({ 'username': email, 'password': password, s:flash }),
                 success: function(response) {
                     if (response.status == 'error') {
                        $('#form-alert').show();
                        $('#form-alert').html("Invalid Username/Password");
-                    }
-                    else {
-                         window.location.replace('//' + host_url + '/users/join-community')
+                    } else {
+                        //response should returna  room which we take them to.
+                        ///community/room/:id
+                        if (response.room) {
+                            window.location.replace('//' + host_url + '/community/room/'+response.room)
+                        } else {
+                            window.location.replace('//' + host_url + '/get-started');
+                        }
                     }
                 },
                 failure: function(error) {

@@ -26,13 +26,15 @@ block content
 
         let host_url = '#{ host }';
 
-        $('#email').change(function(){
+        $('#email').change(function()
+        {
             //validate blank field.
             let email = ($('#email').val()).trim();
             $('#email').removeClass('is-invalid');
             $('#email').removeClass('is-valid');
             
-            if (email === "") {
+            if (email === "") 
+            {
                 $('#email').addClass('is-invalid');
                 $('.invalid-feedback').html('Username Required');
                 return;
@@ -63,7 +65,8 @@ block content
             });
         });
         
-        $('form').submit(function(e) {
+        $('form').submit(function(e) 
+        {
             e.preventDefault();
             
             let email = ($('#email').val()).trim();
@@ -108,7 +111,8 @@ block content
                         }
                     }
                 },
-                failure: function(error) {
+                failure: function(error) 
+                {
                     $('.invalid-feedback').html('Username Taken');
                     $('#email').addClass('is-invalid');
                 }

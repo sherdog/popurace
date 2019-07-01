@@ -6,6 +6,7 @@ const SALT_WORK_FACTOR = 10
 const UserSchema = new Schema({
 	username: { type: String, index: { unique: true } },
 	password: { type: String, required: true },
+	communities: [ {type : Schema.Types.ObjectId, ref: 'community', default: null }],
 	community: {
 		type: Schema.Types.ObjectId,
 		ref: 'community',

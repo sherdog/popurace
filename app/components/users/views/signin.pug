@@ -26,11 +26,12 @@ block content
 
         let host_url = '#{ host }';
         
-        $('form').submit(function(e) {
+        $('form').submit(function(e) 
+        {
             e.preventDefault();
             
             let email = ($('#email').val()).trim();
-            let password = $('#password').val();
+            let password = $('#password').val().trim();
             
             if (email == "" || password == "")
             {
@@ -38,7 +39,7 @@ block content
                 $('#form-alert').html("Username/Password can't be blank");
                 return false;
             }
-            
+
             $('#form-alert').hide();
             $('#form-alert').html('');
 
@@ -49,20 +50,21 @@ block content
                 dataType: 'json',
                 data: JSON.stringify({ 'username': email, 'password': password, s:flash }),
                 success: function(response) {
-                    if (response.status == 'error') {
+                    if (response.status == 'error') 
+                    {
                        $('#form-alert').show();
                        $('#form-alert').html("Invalid Username/Password");
-                    } else {
-                        //response should returna  room which we take them to.
-                        ///community/room/:id
-                        if (response.room) {
+                    } 
+                    else 
+                    {
+                        if (response.room) 
                             window.location.replace('//' + host_url + '/community/room/'+response.room)
-                        } else {
-                            window.location.replace('//' + host_url + '/get-started');
-                        }
+                        else 
+                            window.location.replace('//' + host_url + '/community/');
                     }
                 },
-                failure: function(error) {
+                failure: function(error) 
+                {
                     $('#form-alert').show();
                     $('#form-alert').html("Unknown error: try again");
                 }

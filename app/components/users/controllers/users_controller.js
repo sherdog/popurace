@@ -76,36 +76,42 @@ router.post('/check_username', function(req, res) {
   //here we're going to check if the username if not available.
   //if it's not available we tell the user.
   User.findOne({username: req.body.username})
-    .then(function(user){
+		.then(function(user)
+		{
         res.send({'available': (user === null)})
     })
-    .catch(function(err){
+		.catch(function(err)
+		{
       res.send(err);
     })
 })
 
-router.post('/logout', function(req, res) {
-  req.session.destroy(function(err) {
+router.post('/logout', function(req, res) 
+{
+	req.session.destroy(function(err) 
+	{
     console.log("error destroying session");
   })
 
-  res.send(JSON.stringify({ status: 'ok' }))
+	res.send(JSON.stringify({ status: 'ok' }))
+	
 })
 
-router.post('/login', function(req, res) {
+router.post('/login', function(req, res) 
+{
 
 	let username = req.body.username;
 	let pass = req.body.password;
 	let room = req.body.room;
 	
 	User.findOne({ username: username })
-		.then(function(user) {
-			if(user == "") {
+		.then(function(user) 
+		{
+			if(user == "") 
 				res.send(JSON.stringify({ status: 'error'}))
-			}
-			if (!bcrypt.compareSync(pass, user.password)) {
+
+			if (!bcrypt.compareSync(pass, user.password)) 
 				res.send(JSON.stringify({ status: 'error' }))
-		}
 		
 			//Logged in successfully
 			req.session.logged_in = true
@@ -114,18 +120,50 @@ router.post('/login', function(req, res) {
 
 			//if room is being submitted, lets up the users with that community room.
 			let roomID = "";
-			if (user.communty == "" && room) {
-				user.community = room;
-				user.save();
-				roomID = room;
-			} else {
-				roomID = user.community;
-			}
+			if (user.communities.length === 0 && room) 
+			{
+				if (room)
+				{
+					//maybe this was an invite. lets check to see if the user is in this community.
+					Community.findById(room)
+					.then(function(comm)
+					{
+						if (comm)
+						{
+							if(comm.users.indexOf(user._id) === -1)
+							{
+								comm.users.push(user._id);
+								comm.save();
+							}
+						}
+					})
+					.catch(function(err)
+					{
+						console.log("Error finding community with " + room);
+					})
+				}
+				if (user.communities.indexOf(room) === -1)
+				{
+					user.communities.push(room);
+					user.save();
+				}
 			
-			res.send(JSON.stringify({ status: 'ok', room: roomID }))
-
+				roomID = room;
+				res.send(JSON.stringify({ status: 'ok', room: roomID }))
+			} 
+			else if (user.communities.length === 0 && !room)
+			{
+				//Shit, we need to send them to the get started
+				res.send(JSON.stringify({ status: 'ok', room: null }))
+			}
+			else 
+			{
+				roomID = user.communities[0];
+				res.send(JSON.stringify({ status: 'ok', room: roomID }))
+			}
 		})
-		.catch(function(err) {
+		.catch(function(err) 
+		{
 			res.send(JSON.stringify({ status: 'error'}));	
 		})
 });

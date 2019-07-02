@@ -64,6 +64,13 @@ block content
             })
         });
 
+        socket.on('updatecommunities', function(communities) {
+            $('#communities').html('');
+            $.each(usernames, function(key, val){
+                $('#communities').append($('<div id="val">').html(val));
+            })
+        });
+
         $('form').submit(function(e) {
             e.preventDefault();
             let txt = ($('#txt').val());

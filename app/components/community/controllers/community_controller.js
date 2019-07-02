@@ -4,29 +4,38 @@ const Community = require('../models/community_model');
 const User = require('../../users/models/user_model');
 const mongoose = require('mongoose');
 
-router.get('/', function(req, res) {
+router.get('/', function(req, res) 
+{
   res.render('./community/views/index', { host: req.headers.host })
 });
 
-router.get('/invitation/:id', function(req, res) {
-  
+router.get('/invitation/:id', function(req, res) 
+{
   Community.findOne({ invite_code: req.params.id })
-  .then(function(communityData){
-    if (communityData) {
-      console.log("Found community: " + communityData);
+  .then(function(communityData)
+  {
+    if (communityData) 
+    {
       res.render('community/views/join', { community_name:communityData._id, invite_code: req.params.id, host: req.headers.host });
-    } else {
+    } 
+    else 
+    {
       res.render('community/views/join', { error:true, error_message: "Error, could not find invite code", host: req.headers.host });
     }
   })
-  //res.render('community/views/getstarted', { host: req.headers.host })
+  .catch(function(err)
+  {
+    console.log('Error searching for community.');
+  })
 })
 
-router.get('/error', function(req, res){
+router.get('/error', function(req, res)
+{
   res.render('./community/views/denied')
 })
 
-router.get('/room/:id', function(req, res) {
+router.get('/room/:id', function(req, res)
+{
 
   let roomID = req.params.id;
   let connectError = false;
@@ -34,31 +43,36 @@ router.get('/room/:id', function(req, res) {
 
   Community.findById(mongoose.Types.ObjectId(roomID))
   .then(function(com) {
-    if (com) {
-
-      console.log("Found community: " + com);
-
+    if (com) 
+    {
       //we found one. is user logged in?
-      if (!req.session.logged_in) {
+      if (!req.session.logged_in) 
+      {
         req.session.flash = "You must be logged in to view the community room";
         req.session.room = roomID;
         connectError = true;
         loggedIn = false;
-      } else {
+      } 
+      else 
+      {
         //check if user has access to this room.
-        console.log("Checking user session: " + req.session.user);
         User.findById(mongoose.Types.ObjectId(req.session.user))
         .then(function(user) {
-          console.log('user com: ' + user.community + ' room: ' + roomID);
-          if (user.community != roomID) {
+
+          if (user.communities.indexOf(roomID) === -1)
+          {
             //fucking user trying to be sneaky.
             connectError = true;
             console.log('Rooms do not match.');
+            res.redirect('/community/error');
+            res.end();
           }
         })
         .catch(function(err){
           console.log('Couldnt locate user? wtf. ' + err);
           connectError = true;
+          res.redirect( '../../sign-in');
+          res.end();
         })
       }
     }
@@ -84,17 +98,15 @@ router.get('/room/:id', function(req, res) {
     console.log("error finding community: " + error);
     connectError = true;
   })
-
-  
-  
 });
 
-router.post('/join-community', function(req, res) {
-
+router.post('/join', function(req, res)
+{
   //validate code:
-  let invite_code = req.body.invite_code.trim();
+  let invite_code = req.body.invite_code;
   let error = false;
   let msg = "";
+  let community_id = '';
 
   if (invite_code == "" || invite_code.length != 8)
   {
@@ -105,89 +117,105 @@ router.post('/join-community', function(req, res) {
   {
     //check for invite code in all community.
     Community.findOne({invite_code: invite_code })
-    .then (function(comm){
-      if (!comm) {
+    .then (function(comm)
+    {
+      console.log('Community found with invite code: ' + invite_code);
+      if (!comm) 
+      {
         error = false;
         msg = "Invalid invite code";
-      } else {
-
+      }
+      else 
+      {
+        console.log("Community data: " + comm);
         User.findById(req.session.user)
-        .then(function(user){
-          if (!user) {
+        .then(function(user)
+        {
+          if (!user) 
+          {
             error = true;
             msg = "Must be signed in to continue."
           }
           else
           {
-            user.community_id = comm._id;
-            user.save();
+            if (!user.communities.indexOf(comm._id) === -1)
+            {
+              user.communities.push(comm._id);
+              user.save();
+            }
+
+            if (comm.users.indexOf(user._id) == -1)
+            {
+              comm.users.communities.push(user._id);
+              comm.save();
+            }
           }
         })
-        .catch(function(err){
+        .catch(function(err)
+        {
           error = true;
           msg = "Unexpected error occurred"
         })
-        
+        res.send(JSON.stringify({ status: "ok", community_id: comm._id }))
+      return;
       }
     })
-    .catch(function(err){
+    .catch(function(err)
+    {
       error = true;
       msg = "Unexpected error occurred"
-    })
-
-    if (error)
-    {
       res.send(JSON.stringify({status: "error", "msg": msg}));
       return;
-    } else {
-      res.send(JSON.stringify({ status: "ok", community_id: comm._id }))
-      return;
-    }
+    })
   }
 })
 
-router.post('/check_name', function(req, res){
-
+router.post('/create_community', function(req, res)
+{
   let name = req.body.community_name.trim();
-
   let query = { community_name: name }
+  
   Community.findOne(query)
-  .then (function(communityData) {
-    
-    if (communityData) {
-
+  .then (function(communityData) 
+  {
+    if (communityData)
+    {
       res.send({ status: 'ok', valid: false })
-
-    } else {
-
-       Community.create({ community_name: name }, function(err, communityData) {
-          
-          if (err) { 
+    } 
+    else
+    {
+       Community.create({ community_name: name }, function(err, communityData)
+       {
+          if (err)
+          { 
             res.send({ status: 'error', 'msg': err })
           }
 
-          //get user and update his record with this new community.
-          console.log("find by id: " + req.session.user);
-
           User.findById(req.session.user)
-          .then(function(userData){
-            
-            console.log("Found user: " + userData);
+          .then(function(userData)
+          {
 
-            userData.community = communityData._id;
+            //Add user to communities.
+            communityData.users.push(userData._id)
+            communityData.save();
+
+            userData.communities.push(communityData._id); //Add to list of communities this user owns.
             userData.save();
             
             req.session.community_name = name;
             res.send({status: 'ok', valid:true, community_id: communityData._id, community_name: name })
           })
+          .catch(function(err)
+          {
+            console.log("Error finding user by ID " + req.session.user);
+          })
        })
     }
   })
-  .catch(function(error){
+  .catch(function(error)
+  {
     console.log("Error checking for commmunity name " + error);
   })
-  console.log("Checking for available community name");
-
 })
 
 module.exports = router

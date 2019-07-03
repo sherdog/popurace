@@ -33,7 +33,7 @@ router.get('/invitation/:id', function(req, res)
 router.get('/get_joined_communities', function(req, res)
 {
       //return a list of communities that a user is subscribed to.
-  Console.log('user session: ' + req.session.user);
+  console.log('user session: ' + req.session.user);
   
       User.findById(req.session.user)
       .then(function(userData){

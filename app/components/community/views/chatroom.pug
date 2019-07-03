@@ -55,6 +55,13 @@ block content
             },
             1000);
         })
+        
+        socket.on('update_channels', function(channel) {
+            $('#communities').html();
+            $.each(channel, function(key, val){
+                $('#userList').append($('<div id="val">').html(val));
+            })
+        }
 
         socket.on('updateusers', function(usernames) {
             
@@ -88,6 +95,23 @@ block content
             var str = date.getHours() + ":" + date.getMinutes();
 
             return str;
+        }
+        
+        $(document).ready(function(){
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "//" + host_url + "/community/get_joined_communities",
+                data: JSON.stringify({ 'fetch': true }),
+                success: function(response) {
+                    if (response.status == 'ok') {
+                        
+                    }
+                },
+                error: function(err) {
+                
+                }
+            });
         }
 
         $('#logout').click(function(e){

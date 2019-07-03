@@ -50,14 +50,10 @@ router.get('/get_joined_communities', function(req, res)
            })
         }
           
-          res.send({ channels: subscribedRoomNames, status: 'ok'});
-          return;
+         
       })
-      .catch(function(err){
-         console.log('Error getting joined communities');
-      })
-        
-      res.send({ status: 'error'});
+  
+     res.send({ channels: subscribedRoomNames, status: 'ok'});
 });
 
 router.get('/error', function(req, res)

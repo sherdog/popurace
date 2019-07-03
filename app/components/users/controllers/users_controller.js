@@ -31,19 +31,22 @@ router.post('/join-community', function(req, res) {
 		if (communityData)
 		{
 			User.findById(mongoose.Types.ObjectId( req.session.user ))
-			.then(function(userData) {
-
-				userData.community = communityData._id;
+			.then(function(userData) 
+			{
+				userData.communities.push(communityData._id);
 				userData.save()
-				.then(function(updatedUser) {
+				.then(function(updatedUser) 
+				{
 					res.send(JSON.stringify({ status: 'ok', community: communityData._id } ))
 				})
-				.catch(function(err){
+				.catch(function(err)
+				{
 					res.send(JSON.stringify({ status: 'error', msg: 'error joining community'}));
 				})
 			})
 		}
-		else {
+		else 
+		{
 			//create new community.
 			Community.create({}, function (err, communityData) {
 				
@@ -142,6 +145,7 @@ router.post('/login', function(req, res)
 						console.log("Error finding community with " + room);
 					})
 				}
+
 				if (user.communities.indexOf(room) === -1)
 				{
 					user.communities.push(room);
@@ -153,11 +157,13 @@ router.post('/login', function(req, res)
 			} 
 			else if (user.communities.length === 0 && !room)
 			{
+				console.log('no rooms found sending null ' + user.communities.length);
 				//Shit, we need to send them to the get started
 				res.send(JSON.stringify({ status: 'ok', room: null }))
 			}
 			else 
 			{
+				console.log('Found many communities, sending to the first one');
 				roomID = user.communities[0];
 				res.send(JSON.stringify({ status: 'ok', room: roomID }))
 			}

@@ -8,6 +8,8 @@ block content
                         if(sess && sess.room)
                             input(type="hidden", id="roomID", value=sess.room)
                     input(type="hidden" id="dest" value=dest)
+                    if (sess && sess.flashData)
+                        p.alert.alert-danger= session.flashData.message
 
                     p.h4.mb-4 Create Account
                     p Create your free account, fill in the form below.

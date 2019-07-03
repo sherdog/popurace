@@ -3,6 +3,7 @@ var express = require('express')
 const Community = require('../models/community_model');
 const User = require('../../users/models/user_model');
 const mongoose = require('mongoose');
+const authenticated = require('../../../helpers/authenticated');
 
 router.get('/', function(req, res) 
 {
@@ -34,7 +35,7 @@ router.get('/error', function(req, res)
   res.render('./community/views/denied')
 })
 
-router.get('/room/:id', function(req, res)
+router.get('/room/:id', authenticated, function(req, res)
 {
 
   let roomID = req.params.id;
@@ -129,24 +130,27 @@ router.post('/join', function(req, res)
       {
         console.log("Community data: " + comm);
         User.findById(req.session.user)
-        .then(function(user)
+        .then(function(userData)
         {
-          if (!user) 
+          if (!userData) 
           {
+            console.log('Couldnt find user! ' + userData);
             error = true;
             msg = "Must be signed in to continue."
           }
           else
           {
-            if (!user.communities.indexOf(comm._id) === -1)
+            console.log('found user! ' + userData);
+            if (!userData.communities.indexOf(comm._id) === -1 || userData.communities.length === 0)
             {
-              user.communities.push(comm._id);
-              user.save();
+              console.log("Empty communities " + comm);
+              userData.communities.push(comm._id);
+              userData.save();
             }
 
-            if (comm.users.indexOf(user._id) == -1)
+            if (comm.users.indexOf(userData._id) == -1)
             {
-              comm.users.communities.push(user._id);
+              comm.users.communities.push(userData._id);
               comm.save();
             }
           }

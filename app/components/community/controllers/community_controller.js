@@ -4,6 +4,7 @@ const Community = require('../models/community_model');
 const User = require('../../users/models/user_model');
 const mongoose = require('mongoose');
 const authenticated = require('../../../helpers/authenticated');
+const socket = require('../../../socket.io');
 
 router.get('/', function(req, res) 
 {
@@ -29,6 +30,33 @@ router.get('/invitation/:id', function(req, res)
     console.log('Error searching for community.');
   })
 })
+
+router.get('/get_joined_communities', function(req, res)
+{
+      //return a list of communities that a user is subscribed to.
+      User.findById(req.session.user)
+      .then(function(userData){
+         let subscribedRoomNames = [];
+        
+        for(var i = 0; i < userData.communities.length; i++)
+        {
+           Community.findById(userData.communities[i])
+          .then(function(commData){
+             subscribedRoomNames.push({ name: commData.community_name, id: commData._id });
+           })
+          .catch(function(err){
+             console.log('Couldnt locate community with id ' + userData.communities[i]);
+           })
+          
+          res.send({ channels: subscribedRoomNames, status: 'ok'});
+          return;
+      }),
+      .catch(function(err){
+         console.log('Error getting joined communities');
+      })
+        
+      res.send({ status: 'error'});
+});
 
 router.get('/error', function(req, res)
 {

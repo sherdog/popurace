@@ -47,6 +47,7 @@ router.get('/get_joined_communities', function(req, res)
           .catch(function(err){
              console.log('Couldnt locate community with id ' + userData.communities[i]);
            })
+        }
           
           res.send({ channels: subscribedRoomNames, status: 'ok'});
           return;

@@ -4,7 +4,6 @@ const Community = require('../models/community_model');
 const User = require('../../users/models/user_model');
 const mongoose = require('mongoose');
 const authenticated = require('../../../helpers/authenticated');
-const socket = require('../../../socket.io');
 
 router.get('/', function(req, res) 
 {

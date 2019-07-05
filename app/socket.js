@@ -7,17 +7,20 @@ module.exports = function(http) {
 	ioInstance = io;
 	let usernames = {};
 
-	io.sockets.on('connection', function(socket){
-		//start the realtime stuffs. 
-
+	io.sockets.on('connection', function(socket)
+	{
 		socket.on('adduser', function(username, room){
-				socket.username = username;
-				socket.room = room;
-				usernames[username] = username;
-				socket.join(room);
-				io.sockets.to(room).emit('updateusers', usernames);
-				socket.emit('updatechat', '<span style="color:red">Daemon</span>', 'You have connected to '+ room);
-				socket.broadcast.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', username + ' has connected');
+
+			console.log('adduser called for room: ' + room);
+			socket.username = username;
+			socket.room = room;
+			usernames[username] = username;
+
+			socket.join(room);
+
+			socket.broadcast.to(room).emit('updateusers', usernames);
+			io.sockets.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', 'You have connected to '+ room);
+			socket.broadcast.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', username + ' has joined the chat');
 		})
 
 		socket.on('sendchat', function(data) {
@@ -27,7 +30,7 @@ module.exports = function(http) {
 		socket.on('disconnect', function(){
 			delete usernames[socket.username];
 			io.sockets.in(socket.room).emit('updateusers', usernames);
-			socket.broadcast.emit('updatechat', '<span style="color:red">Daemon</span>', socket.username + ' has disconnected');
+			io.sockets.in(socket.room).emit('updatechat', '<span style="color:red">Daemon</span>', socket.username + ' has left the chat');
 			socket.leave(socket.room);
 		})
 	});

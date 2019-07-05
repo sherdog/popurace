@@ -21,6 +21,9 @@ app.use(session({
     store: new MongoStore({url: config.mongodb.host})
 }));
 
+if (config.environment === 'development')
+    app.locals.pretty = true;
+
 app.use(require('./routes'));
 
 module.exports = app

@@ -1,6 +1,11 @@
 var config = module.exports
 var PRODUCTION = process.env.NODE_ENV === 'production'
 
+if (process.env.NODE_ENV === "production")
+    config.environment = process.env.NODE_ENV;
+else
+    config.environment = 'development'; 
+
 config.express = {
     port: process.env.EXPRESS_PORT || 3000,
     ip: '127.0.0.1'
@@ -17,7 +22,6 @@ config.session = {
 
 if (PRODUCTION)
 {
-    //set to the prod IP when that time comes.
     config.express.ip = '0.0.0.0'
 }
 

@@ -1,26 +1,18 @@
 const app = require('./index')
 const http = require('http').Server(app)
 const { Connection } = require('./db')
-const socket = require('./socket')(http)
-const fs = require('fs')
-const path = require('path')
-
-//include some sort of logging.. need to research
-console.log('Starting server instance')
-
-let port = (process.env.PORT) ? process.env.PORT : 3000;
+const config = require('./config');
 
 //start connection to mongo db
 Connection.connect()
     .then(con => {
         //set db instance to app, so it can be used globally.
         app.set('db', con);
+        const server = http.listen(config.express.port, function() {
 
-        //start the server.
-        const server = http.listen(port, function() {
-            console.log('Listening on port ' + port)
+            console.log('Listening on port ' + config.express.port + ' in mode: ' + config.environment);
         });
     })
     .catch(error => {
-        console.log('Error creating mongoose connection ', error)
+        console.log('Error, website done! Website down!');
     })

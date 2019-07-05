@@ -24,12 +24,14 @@ block content
             .row.no-gutters.h-100
                 #communityList.col-lg-2.col-md-2.col-sm-2.bg-light
                     #communityListHeading.p-2
-                       b Communities
-                    ul#communities
+                        b Communities
+                        ul#communities
                 #messageContainer.col-lg-8.col-md-8.col-sm-8
                     ul#messages
                 .col-lg-2.bg-light.col-md-2.col-sm-2
-                    div#userList.p-2
+                    #memberListHeading.p-2
+                        b Members
+                        div#userList.p-2
     footer.bg-dark
         form(action='./' method='post' id='chatForm')
             .container-fluid.no-gutters
@@ -57,7 +59,6 @@ block content
         })
 
         socket.on('updateusers', function(usernames) {
-            
             $('#userList').html('');
             $.each(usernames, function(key, val){
                 $('#userList').append($('<div id="val">').html(val));
@@ -90,8 +91,14 @@ block content
                 url: "//" + host_url + "/community/get_joined_communities",
                 data: JSON.stringify({ 'fetch': true }),
                 success: function(response) {
-                    if (response.status == 'ok') {
-                        
+                    if (response.status == 'ok') 
+                    {
+                        $('#communities').html('');
+
+                        $.each(response.communities, function(key, val){
+                            console.log('val:' + val.community_name);
+                            $('#communities').append($('<div id="val._id">').html('<a href=#'+val._id+'>#' + val.community_name+'</a>'));
+                        })
                     }
                 },
                 error: function(err) {

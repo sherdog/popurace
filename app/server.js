@@ -2,6 +2,7 @@ const app = require('./index')
 const http = require('http').Server(app)
 const { Connection } = require('./db')
 const config = require('./config');
+const socket = require('./socket')(http)
 
 //start connection to mongo db
 Connection.connect()

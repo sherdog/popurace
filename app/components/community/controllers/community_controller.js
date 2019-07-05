@@ -33,27 +33,18 @@ router.get('/invitation/:id', function(req, res)
 router.get('/get_joined_communities', function(req, res)
 {
       //return a list of communities that a user is subscribed to.
-  console.log('user session: ' + req.session.user);
-      let subscribedRoomNames = [];
-      
-      User.findById(req.session.user)
-      .then(function(userData){
-        
-        console.log("found user: " + userData);
-        for(var i = 0; i < userData.communities.length; i++)
-        {
-           Community.findById(userData.communities[i])
-          .then(function(commData){
-             console.log("adding com : " + commData._id);
-             subscribedRoomNames.push({ name: commData.community_name, id: commData._id });
-           })
-          .catch(function(err){
-             console.log('Couldnt locate community with id ' + userData.communities[i]);
-           })
-        }
-      })
-  
-     res.send({ channels: subscribedRoomNames, status: 'ok'});
+      User.findById(req.session.user, 'communities')
+        .populate('communities', 'community_name')
+        .exec(function(err, data) {
+          if (err)
+          {
+            res.send({status: 'error', 'communities': null})
+          }
+          else
+          {
+            res.send({status: 'ok', 'communities': data.communities})
+          }
+        });
 });
 
 router.get('/error', function(req, res)

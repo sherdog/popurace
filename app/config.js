@@ -5,9 +5,9 @@ if (process.env.NODE_ENV === "production")
     config.environment = process.env.NODE_ENV;
 else
     config.environment = 'development'; 
-
+process.env.PORT 
 config.express = {
-    port: process.env.EXPRESS_PORT || 3000,
+    port: process.env.PORT  || 3000,
     ip: '127.0.0.1'
 }
 

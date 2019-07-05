@@ -15,7 +15,7 @@ module.exports = function(http) {
 				socket.room = room;
 				usernames[username] = username;
 				socket.join(room);
-				io.sockets.in(room).emit('updateusers', usernames);
+				io.sockets.to(room).emit('updateusers', usernames);
 				socket.emit('updatechat', '<span style="color:red">Daemon</span>', 'You have connected to '+ room);
 				socket.broadcast.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', username + ' has connected');
 		})

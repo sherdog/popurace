@@ -23,7 +23,7 @@ module.exports = function(http)
 				rooms[room] = new Room(username);
 
 			io.sockets.to(room).emit('updateusers', rooms[room].getUsers());
-			io.sockets.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', 'You have connected to '+ room);
+			socket.emit('updatechat', '<span style="color:red">Daemon</span>', 'You have connected to '+ room);
 			socket.broadcast.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', username + ' has joined the chat');
 		})
 

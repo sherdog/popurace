@@ -1,6 +1,7 @@
 extends ../../common/layout
 block content
     include modals/invite_modal.pug
+    include modals/join_modal.pug
     nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.align-self-center
         button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarContents" aria-expanded="false" aria-label="Toggle navigation")
             span.navbar-toggler-icon
@@ -8,7 +9,9 @@ block content
         #navbarContents.collapse.navbar-collapse.justify-content-between
             ul.navbar.navbar-nav
                 li.nav-item
-                    button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#inviteModal") Invite Friends
+                    a(href="#" class="nav-link" data-toggle="modal" data-target="#joinModal") Join Community
+                li.nav-item
+                    a(href="#" class="nav-link" data-toggle="modal" data-target="#inviteModal") Invite
             .navbar-nav
                 a.nav-link.dropdown-toggle.transparent.btn-transparent(href="#" id="navbarProfileDropdown" data-toggle="dropdown", aria-haspopup="true" aria-expanded="false")
                     img(src="https://randomuser.me/api/portraits/men/65.jpg", class="avatar rounded-circle", alt="MikeS") 
@@ -16,7 +19,7 @@ block content
                 .dropdown-menu.dropdown-menu-right(aria-labelledby="navbarProfileDropdown")
                     a(class="dropdown-item" href="#") Edit Profile
                     a(class="dropdown-item" href="#") Settings
-                    a(class="dropdown-item" href="#" data-toggle="modal" id="inviteModal") Invite
+                    a(class="dropdown-item" href="#" data-toggle="modal" data-target="#inviteModal") Invite
                     .dropdown-divider
                     a(class="dropdown-item" href="" id="logout") Logout
     #content.h-100
@@ -83,21 +86,63 @@ block content
 
             return str;
         }
+
+        function resetError(id)
+        {
+            $(id).hide();
+            $(id).html('');
+        }
+
+        $('#joinCommunity').click(function(e){
+            e.preventDefault();
+            let inviteCode = $('#inviteCodeValue').val().trim();
+            
+            resetError('#inviteCodeError');
+            
+            if (inviteCode == '')
+            {
+                $('#inviteCodeError').show();
+                $('#inviteCodeError').html('Error: Enter a valid invite code');
+            }
+            else
+            {
+                let data = { "invite_code": inviteCode };
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    url: '//' + host_url + '/community/join',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status == 'ok') 
+                        {
+                            console.log("status was ok");
+                            getUserCommunities();
+                            $('#joinModal').modal('hide')
+                        }
+                    },
+                    error: function(err) {
+                    
+                    }
+                });
+            }
+        });
         
-        $(document).ready(function(){
+        function getUserCommunities()
+        {
             $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 url: "//" + host_url + "/community/get_joined_communities",
                 data: JSON.stringify({ 'fetch': true }),
+                dataType: 'json',
                 success: function(response) {
                     if (response.status == 'ok') 
                     {
                         $('#communities').html('');
 
                         $.each(response.communities, function(key, val){
-                            console.log('val:' + val.community_name);
-                            $('#communities').append($('<div id="val._id">').html('<a href=#'+val._id+'>#' + val.community_name+'</a>'));
+                            $('#communities').append($('<div id="val._id">').html('<a href=/community/room/'+val._id+'>#' + val.community_name+'</a>'));
                         })
                     }
                 },
@@ -105,6 +150,9 @@ block content
                 
                 }
             });
+        }
+        $(document).ready(function(){
+           getUserCommunities();
         });
 
         $('#logout').click(function(e){

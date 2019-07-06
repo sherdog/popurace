@@ -30,7 +30,7 @@ router.get('/invitation/:id', function(req, res)
   })
 })
 
-router.get('/get_joined_communities', function(req, res)
+router.get('/get_joined_communities', authenticated, function(req, res)
 {
       //return a list of communities that a user is subscribed to.
       User.findById(req.session.user, 'communities')
@@ -151,16 +151,14 @@ router.post('/join', function(req, res)
         {
           if (!userData) 
           {
-            console.log('Couldnt find user! ' + userData);
             error = true;
             msg = "Must be signed in to continue."
           }
           else
           {
             console.log('found user! ' + userData);
-            if (!userData.communities.indexOf(comm._id) === -1 || userData.communities.length === 0)
+            if (userData.communities.indexOf(comm._id) === -1 )
             {
-              console.log("Empty communities " + comm);
               userData.communities.push(comm._id);
               userData.save();
             }
@@ -170,6 +168,7 @@ router.post('/join', function(req, res)
               comm.users.communities.push(userData._id);
               comm.save();
             }
+            
           }
         })
         .catch(function(err)

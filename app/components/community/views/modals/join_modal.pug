@@ -1,0 +1,15 @@
+#joinModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="joinModal" aria-hidden="true")
+    .modal-dialog.modal-dialog-centered(role="document")
+        .modal-content
+            .modal-header
+                h5.modal-title#inviteModalTitle Join Community
+                button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+            .modal-body
+                p#inviteCodeError.alert.alert-danger(style="display:none;") Error! community not found.
+                p Enter in the 8 digit invite code below
+                input(type="text" class="form-control" name="inviteCode" id="inviteCodeValue")
+                
+            .modal-footer
+                button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
+                button(type="button", class="btn btn-primary" id="joinCommunity") Join Community

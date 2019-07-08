@@ -23,7 +23,7 @@ module.exports = function(http)
 				rooms[room] = new Room(username);
 
 			io.sockets.to(room).emit('updateusers', rooms[room].getUsers());
-			socket.emit('updatechat', '<span style="color:red">Daemon</span>', 'You have connected to '+ room);
+			//socket.emit('updatechat', 'Daemon', 'You have connected to '+ room);
 			socket.broadcast.to(room).emit('updatechat', '<span style="color:red">Daemon</span>', username + ' has joined the chat');
 		})
 
@@ -38,7 +38,7 @@ module.exports = function(http)
 				rooms[socket.room].removeUser(socket.username);
 
 			io.sockets.in(socket.room).emit('updateusers', rooms[socket.room].getUsers());
-			io.sockets.in(socket.room).emit('updatechat', '<span style="color:red">Daemon</span>', socket.username + ' has left the chat');
+			//io.sockets.in(socket.room).emit('updatechat', '<span style="color:red">Daemon</span>', socket.username + ' has left the chat');
 			socket.leave(socket.room);
 		})
 	});

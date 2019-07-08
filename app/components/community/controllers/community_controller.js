@@ -109,7 +109,7 @@ router.get('/room/:id', authenticated, function(req, res)
         res.redirect('/community/error');
     } else {
       let channelName = (com.community_name != "") ? com.community_name : com._id;
-      res.render('./community/views/chatroom', { host: req.headers.host, session: req.session, channel: channelName, invite_code: com.invite_code });
+      res.render('./community/views/chatroom', { host: req.headers.host, roomID: com._id, session: req.session, channel: channelName, invite_code: com.invite_code });
     }
   })
   .catch(function(error){

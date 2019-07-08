@@ -30,7 +30,7 @@ block content
                         b Communities
                         ul#communities
                 #messageContainer.col-lg-8.col-md-8.col-sm-8
-                    ul#messages
+                    div#messages.container
                 .col-lg-2.bg-light.col-md-2.col-sm-2
                     #memberListHeading.p-2
                         b Members
@@ -48,23 +48,50 @@ block content
         let socket = io.connect(host_url);
         let channel = '#{ channel }';
         let chatName = '#{session.username}'
+        let lastUser = "";
+        let avatar = "";
 
         socket.on('connect', function(){
             socket.emit('adduser', chatName, channel);
         })
 
-        socket.on('updatechat', function(username, data){
-            $('#messages').append($('<li>').html('<small>'+ getFormattedDate() + '</small> <b>'+username+'</b>: ' + data));
+        socket.on('updatechat', function(username, data) 
+        {
+            console.log('last : ' + lastUser + ' cur: ' + username);
+            //Check if last chat message was same user, if so just br and add message.
+            if (lastUser != username)
+            {
+                if (username == "Tom")
+                    avatar = "https://randomuser.me/api/portraits/men/62.jpg";
+                if (username == "Mike")
+                    avatar = "https://randomuser.me/api/portraits/men/65.jpg";
+                else
+                    avatar = "https://randomuser.me/api/portraits/men/60.jpg";
+
+                $('#messages').append('</div>');
+                let html = '<div class="row mb-2 p-2">';
+                html += '<div class="col-lg-1 text-center"><img src="'+avatar+'" class="avatar rounded-circle" /></div>';
+                html += '<div class="col-lg-11 usertext '+username+'_message"> <b>'+username+'</b> <small>'+ getFormattedDate() + '</small><br />' + data;
+                $('#messages').append(html);
+            }
+            else
+            {
+                $('#messages div.'+username+'_message:last').append('<br />' + data);
+            }
+            
+           
             $('#messageContainer').animate({
-                scrollTop: $("#messages li").last().offset().top
+                scrollTop: $("#messages div").last().offset().top - 50
             },
             1000);
+
+            lastUser = username;
         })
 
         socket.on('updateusers', function(usernames) {
             $('#userList').html('');
             $.each(usernames, function(key, val){
-                $('#userList').append($('<div id="val">').html(val));
+                $('#userList').append($('<div id="'+val+'">').html(val));
             })
         });
         
@@ -142,7 +169,7 @@ block content
                         $('#communities').html('');
 
                         $.each(response.communities, function(key, val){
-                            $('#communities').append($('<div id="val._id">').html('<a href=/community/room/'+val._id+'>#' + val.community_name+'</a>'));
+                            $('#communities').append($('<div id="'+val._id+'" >').html('<a href=/community/room/'+val._id+'>#' + val.community_name+'</a>'));
                         })
                     }
                 },

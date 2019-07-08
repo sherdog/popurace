@@ -14,6 +14,12 @@ html, body {
 #messageContainer {
     max-height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
+}
+#messages .row { border-top: 1px solid #343A40; }
+#messages .avatar {
+    width:50px;
+    margin: 0px;
 }
 #content {
     max-height: calc(100% - 120px);
@@ -52,3 +58,5 @@ footer {
     position: fixed;
     bottom: 0;
 }
+.usertext { color: #CCCCCC; }
+.usertext b, .usertext small { color:#FFFFFF; }

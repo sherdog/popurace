@@ -25,11 +25,11 @@ block content
     #content.h-100
         .continer-fluid.h-100
             .row.no-gutters.h-100
-                #communityList.col-2.bg-light(style="min-width:100px")
+                #communityList.col-2.bg-light(style="min-width:150px")
                     #communityListHeading.p-2
                         b Communities
                         ul#communities
-                #messageContainer.col-8
+                #messageContainer.col-8(style="min-width:400px;")
                     div#messages.container
                 .col-2.bg-light(style="min-width:100px")
                     #memberListHeading.p-2
@@ -70,7 +70,7 @@ block content
 
                 $('#messages').append('</div>');
                 let html = '<div class="row mb-2 p-2">';
-                html += '<div class="col-lg-1 text-center"><img src="'+avatar+'" class="avatar rounded-circle" /></div>';
+                html += '<div class="col-lg-1 text-center avatar-column"><img src="'+avatar+'" class="avatar rounded-circle" /></div>';
                 html += '<div class="col-lg-11 usertext '+username+'_message"> <b>'+username+'</b> <small>'+ getFormattedDate() + '</small><br />' + data;
                 $('#messages').append(html);
             }

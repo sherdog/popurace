@@ -3,7 +3,11 @@ let ioInstance;
 
 module.exports = function(http) 
 {
-	const io = require('socket.io')(http);
+	const io = require('socket.io')(http,{
+		pingInterval: 500,
+		transports: ['websocket', 'polling']
+	});
+	
 	var Room = require('./helpers/rooms/room.js')
 	let rooms = {};
 

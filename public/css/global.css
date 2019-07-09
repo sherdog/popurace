@@ -7,7 +7,7 @@ html, body {
     background-color:#272B30;
 }
 
-#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages { list-style-type: none; margin: 0; padding: 0; min-width: 400px; }
 #messages li { padding: 5px 10px; }
 #userList { min-height: 100%; }
 #messageViewport { min-height: 100%; height: calc(100vh-20px); }
@@ -44,6 +44,7 @@ html, body {
     width: 30px;
     margin-right: 5px;
 }
+.avatar-column { min-width: 60px; max-width: 60px;}
 
 header {
     width: 100%;
